@@ -1,0 +1,40 @@
+{
+    "name": "becklyn/cron-job",
+    "type": "symfony-bundle",
+    "description": "Centralized cron job integration for Symfony apps.",
+    "homepage": "https://github.com/Becklyn/cron-job-bundle",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Becklyn Studios",
+            "homepage": "http://becklyn.com/"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "doctrine/doctrine-bundle": "^1.11",
+        "doctrine/orm": "^2.6",
+        "dragonmantank/cron-expression": "^2.3",
+        "psr/log": "^1.1",
+        "symfony/console": "^4.3",
+        "symfony/framework-bundle": "^4.3",
+        "symfony/http-kernel": "^4.3"
+    },
+    "require-dev": {
+        "becklyn/php-cs": "^1.5",
+        "roave/security-advisories": "dev-master"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Becklyn\\CronJobBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Becklyn\\CronJobBundle\\": "tests/"
+        }
+    }
+}

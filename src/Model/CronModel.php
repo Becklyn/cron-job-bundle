@@ -1,0 +1,105 @@
+<?php declare(strict_types=1);
+
+namespace Becklyn\CronJobBundle\Model;
+
+use Becklyn\CronJobBundle\Cron\CronJobInterface;
+use Becklyn\CronJobBundle\Data\CronStatus;
+use Becklyn\CronJobBundle\Data\WrappedJob;
+use Becklyn\CronJobBundle\Entity\CronJobRun;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+
+class CronModel
+{
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+
+    /**
+     * @var EntityRepository
+     */
+    private $repository;
+
+
+    /**
+     * @param ManagerRegistry $registry
+     */
+    public function __construct (ManagerRegistry $registry)
+    {
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $registry->getManager();
+        $this->entityManager = $entityManager;
+        $this->repository = $entityManager->getRepository(CronJobRun::class);
+    }
+
+
+    /**
+     * @param WrappedJob $job
+     *
+     * @return CronJobRun|null
+     */
+    public function findLastRun (WrappedJob $job) : ?CronJobRun
+    {
+        return $this->findMostRecentRuns($job, 1)[0] ?? null;
+    }
+
+
+    /**
+     * @param WrappedJob $job
+     * @param int        $limit
+     *
+     * @return CronJobRun[]
+     */
+    public function findMostRecentRuns (WrappedJob $job, int $limit) : array
+    {
+        return $this->repository->createQueryBuilder("log")
+            ->andWhere("log.jobKey = :key")
+            ->setParameter("key", $job->getKey())
+            ->addOrderBy("log.timeRun", "desc")
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    /**
+     * @param WrappedJob $job
+     * @param CronStatus $status
+     */
+    public function logRun (WrappedJob $job, CronStatus $status) : void
+    {
+        $run = new CronJobRun(
+            $job->getKey(),
+            $status->isSuccessful(),
+            $status->getLog(),
+            $job->getSupposedLastRun()
+        );
+
+        $this->entityManager->persist($run);
+    }
+
+
+    /**
+     * Returns whether the job is due
+     *
+     * @param CronJobInterface $job
+     *
+     * @return bool
+     */
+    public function isDue (WrappedJob $job) : bool
+    {
+        return $job->isDue($this->findLastRun($job));
+    }
+
+
+    /**
+     * Flushes the database changes
+     */
+    public function flush () : void
+    {
+        $this->entityManager->flush();
+    }
+}
