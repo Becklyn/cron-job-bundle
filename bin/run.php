@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+// region CLI app
 $projectDir = findProjectDir();
 
 if (null === $projectDir)
@@ -16,9 +17,16 @@ if (is_file("{$projectDir}/MAINTENANCE"))
 
 passthru("{$projectDir}/bin/console cron:run --ansi", $returnVar);
 exit($returnVar);
+// endregion
 
 
-function writeln ($message) : void
+//region CLI Lib
+/**
+ * Writes a single line to the screen
+ *
+ * @param string $message
+ */
+function writeln (string $message) : void
 {
     echo "{$message}\n";
 }
@@ -59,3 +67,4 @@ function displayError (string $error) : void
     writeln("");
     writeln("Error: {$error}");
 }
+//endregion
