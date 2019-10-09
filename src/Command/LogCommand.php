@@ -61,6 +61,12 @@ class LogCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title("Cron Job Log");
 
+        if (!$this->registry->hasJobs())
+        {
+            $io->comment("No jobs registered");
+            return 0;
+        }
+
         if ($input->getOption("single"))
         {
             return $this->logSingleJob($io);

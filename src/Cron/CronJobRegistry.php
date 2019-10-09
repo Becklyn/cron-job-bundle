@@ -59,4 +59,13 @@ class CronJobRegistry
 
         return $jobs;
     }
+
+
+    /**
+     * @return bool
+     */
+    public function hasJobs () : bool
+    {
+        return \count($this->jobs) > 0;
+    }
 }
