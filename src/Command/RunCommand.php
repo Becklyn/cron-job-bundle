@@ -12,7 +12,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class CronCommand extends Command
+/**
+ *
+ */
+class RunCommand extends Command
 {
     public static $defaultName = "cron:run";
 
@@ -35,7 +38,11 @@ class CronCommand extends Command
     private $logger;
 
 
-    public function __construct (CronJobRegistry $registry, CronModel $model, LoggerInterface $logger)
+    public function __construct (
+        CronJobRegistry $registry,
+        CronModel $model,
+        LoggerInterface $logger
+    )
     {
         parent::__construct();
         $this->registry = $registry;
