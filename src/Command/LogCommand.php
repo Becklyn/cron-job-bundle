@@ -103,7 +103,7 @@ class LogCommand extends Command
                 return 1;
             }
         }
-        else if (\count($jobs) > 1)
+        elseif (\count($jobs) > 1)
         {
             $selectedIndex = $io->choice(
                 "Please choose job to inspect",
