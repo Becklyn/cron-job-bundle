@@ -46,7 +46,7 @@ class LogCommand extends Command
     protected function configure () : void
     {
         $this
-            ->addOption("single", null, InputOption::VALUE_NONE, "Whether the log for a single job should be shown.");
+            ->addOption("single", null, InputOption::VALUE_OPTIONAL, "Whether the log for a single job should be shown.", false);
     }
 
 
@@ -60,6 +60,7 @@ class LogCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->title("Cron Job Log");
+        $single = $input->getOption("single");
 
         if (!$this->registry->hasJobs())
         {
@@ -67,9 +68,13 @@ class LogCommand extends Command
             return 0;
         }
 
-        if ($input->getOption("single"))
+        if (false !== $single)
         {
-            return $this->logSingleJob($io);
+            $selectedTask = null !== $single
+                ? (string) $single
+                : null;
+
+            return $this->logSingleJob($io, $selectedTask);
         }
 
         return $this->logAllJobs($io);
@@ -80,20 +85,25 @@ class LogCommand extends Command
      * Logs the detauls.
      *
      * @param SymfonyStyle $io
+     * @param string|null  $preselected
      *
      * @return int
      */
-    private function logSingleJob (SymfonyStyle $io) : int
+    private function logSingleJob (SymfonyStyle $io, ?string $preselected) : int
     {
         $jobs = $this->registry->getAllJobs();
 
-        if (empty($jobs))
+        if (null !== $preselected)
         {
-            $io->error("No cron jobs registered.");
-            return 1;
-        }
+            $job = $jobs[$preselected] ?? null;
 
-        if (\count($jobs) > 1)
+            if (null === $job)
+            {
+                $io->error("No cron job with key '{$preselected}' registered.");
+                return 1;
+            }
+        }
+        else if (\count($jobs) > 1)
         {
             $selectedIndex = $io->choice(
                 "Please choose job to inspect",
@@ -113,6 +123,7 @@ class LogCommand extends Command
         {
             $wrappedJob = new WrappedJob($job, new \DateTimeImmutable());
             $runs = $this->model->findMostRecentRuns($wrappedJob, 10);
+            $io->comment("Key: <fg=yellow>{$wrappedJob->getKey()}</>");
             $io->comment("Next run: {$this->formatNextRun($wrappedJob, $runs[0] ?? null)}");
 
             if (empty($runs))
