@@ -26,12 +26,19 @@ class WrappedJob
     private $key;
 
 
+    /**
+     * @var \DateTimeImmutable
+     */
+    private $nextRun;
+
+
     public function __construct (CronJobInterface $job, \DateTimeInterface $now)
     {
         $cron = CronExpression::factory($job->getCronTab());
 
         $this->job = $job;
         $this->supposedLastRun = \DateTimeImmutable::createFromMutable($cron->getPreviousRunDate($now, 0, true));
+        $this->nextRun = \DateTimeImmutable::createFromMutable($cron->getNextRunDate($now, 0, true));
         $this->key = \md5("{$job->getName()}:{$job->getCronTab()}");
     }
 
@@ -59,7 +66,16 @@ class WrappedJob
      */
     public function getKey () : string
     {
-        return $this->key;
+        return \get_class($this->job);
+    }
+
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getNextRun () : \DateTimeImmutable
+    {
+        return $this->nextRun;
     }
 
 

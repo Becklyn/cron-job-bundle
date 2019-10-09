@@ -5,6 +5,7 @@ namespace Becklyn\CronJobBundle\Command;
 use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Becklyn\CronJobBundle\Cron\CronJobRegistry;
 use Becklyn\CronJobBundle\Data\WrappedJob;
+use Becklyn\CronJobBundle\Entity\CronJobRun;
 use Becklyn\CronJobBundle\Model\CronModel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,6 +71,13 @@ class LogCommand extends Command
     }
 
 
+    /**
+     * Logs the detauls
+     *
+     * @param SymfonyStyle $io
+     *
+     * @return int
+     */
     private function logSingleJob (SymfonyStyle $io) : int
     {
         $jobs = $this->registry->getAllJobs();
@@ -100,6 +108,7 @@ class LogCommand extends Command
         {
             $wrappedJob = new WrappedJob($job, new \DateTimeImmutable());
             $runs = $this->model->findMostRecentRuns($wrappedJob, 10);
+            $io->comment("Next run: {$this->formatNextRun($wrappedJob, $runs[0] ?? null)}");
 
             if (empty($runs))
             {
@@ -118,7 +127,7 @@ class LogCommand extends Command
                 ];
             }
 
-            $io->table(["Date", "Successful?", "Log"], $rows);
+            $io->table(["Date", "Succeeded?", "Log"], $rows);
             return 0;
         }
         catch (\InvalidArgumentException $exception)
@@ -170,15 +179,13 @@ class LogCommand extends Command
                 $rows[] = [
                     "<fg=yellow>{$validJob->getJob()->getName()}</>",
                     $validJob->getJob()->getCronTab(),
-                    $lastRun
-                        ? $lastRun->getTimeRun()->format("d.m.Y H:i")
-                        : "—",
-                    $lastRun->getLog(),
-                    $validJob->isDue($lastRun) ? "<fg=red>yes</>" : "<fg=green>no</>",
+                    $this->formatLastRun($lastRun),
+                    $lastRun ? $lastRun->getLog() : "",
+                    $this->formatNextRun($validJob, $lastRun),
                 ];
             }
 
-            $io->table(["Job", "Cron Tab", "Last Run", "Log", "Is due?"], $rows);
+            $io->table(["Job", "Cron Tab", "Last Run", "Log", "Next Run"], $rows);
         }
 
         if (!empty($invalidRows))
@@ -191,5 +198,53 @@ class LogCommand extends Command
         }
 
         return 0;
+    }
+
+
+    /**
+     * @param WrappedJob      $job
+     * @param CronJobRun|null $lastRun
+     *
+     * @return string
+     */
+    private function formatLastRun (?CronJobRun $lastRun) : string
+    {
+        if (null === $lastRun)
+        {
+            return "—";
+        }
+
+        $color = "green";
+        $suffix = " (ok)";
+
+        if (!$lastRun->isSuccessful())
+        {
+            $color = "red";
+            $suffix = " (failed)";
+        }
+
+        return "<fg={$color}>{$lastRun->getTimeRun()->format("d.m.Y H:i")}{$suffix}</>";
+    }
+
+
+    /**
+     * @param WrappedJob      $job
+     * @param CronJobRun|null $lastRun
+     *
+     * @return string
+     */
+    private function formatNextRun (WrappedJob $job, ?CronJobRun $lastRun) : string
+    {
+        $isDue = $job->isDue($lastRun);
+        $nextRunColor = "green";
+        $nextRunSuffix = "";
+
+        if ($isDue)
+        {
+            $nextRunColor = "red";
+            $nextRunSuffix = " (due)";
+        }
+
+        return "<fg={$nextRunColor}>{$job->getNextRun()->format("d.m.Y H:i")}{$nextRunSuffix}</>";
     }
 }
