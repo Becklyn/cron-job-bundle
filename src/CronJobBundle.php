@@ -14,7 +14,7 @@ class CronJobBundle extends Bundle
     /**
      * @inheritDoc
      */
-    public function build (ContainerBuilder $container)
+    public function build (ContainerBuilder $container) : void
     {
         $container
             ->registerForAutoconfiguration(CronJobInterface::class)

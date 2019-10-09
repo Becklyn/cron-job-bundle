@@ -2,7 +2,6 @@
 
 namespace Becklyn\CronJobBundle\Command;
 
-use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Becklyn\CronJobBundle\Cron\CronJobRegistry;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Entity\CronJobRun;
@@ -44,7 +43,7 @@ class LogCommand extends Command
     /**
      * @inheritDoc
      */
-    protected function configure ()
+    protected function configure () : void
     {
         $this
             ->addOption("single", null, InputOption::VALUE_NONE, "Whether the log for a single job should be shown.");
@@ -55,7 +54,7 @@ class LogCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|void|null
+     * @return int|null
      */
     protected function execute (InputInterface $input, OutputInterface $output) : ?int
     {
@@ -72,7 +71,7 @@ class LogCommand extends Command
 
 
     /**
-     * Logs the detauls
+     * Logs the detauls.
      *
      * @param SymfonyStyle $io
      *
@@ -123,7 +122,7 @@ class LogCommand extends Command
                 $rows[] = [
                     $run->getTimeRun()->format("d.m.Y H:i"),
                     $run->isSuccessful() ? "<fg=green>yes</>" : "<fg=red>no</>",
-                    $run->getLog()
+                    $run->getLog(),
                 ];
             }
 
@@ -139,7 +138,7 @@ class LogCommand extends Command
 
 
     /**
-     * Logs an overview of all jobs
+     * Logs an overview of all jobs.
      *
      * @param SymfonyStyle $io
      *
@@ -202,7 +201,6 @@ class LogCommand extends Command
 
 
     /**
-     * @param WrappedJob      $job
      * @param CronJobRun|null $lastRun
      *
      * @return string

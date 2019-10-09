@@ -86,6 +86,6 @@ class WrappedJob
      */
     public function isDue (?CronJobRun $lastRun) : bool
     {
-        return (null === $lastRun || $lastRun->getTimeRun() < $this->supposedLastRun);
+        return null === $lastRun || $lastRun->getTimeRun() < $this->supposedLastRun;
     }
 }

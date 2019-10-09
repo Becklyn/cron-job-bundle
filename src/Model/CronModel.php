@@ -2,7 +2,6 @@
 
 namespace Becklyn\CronJobBundle\Model;
 
-use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Entity\CronJobRun;
@@ -83,9 +82,9 @@ class CronModel
 
 
     /**
-     * Returns whether the job is due
+     * Returns whether the job is due.
      *
-     * @param CronJobInterface $job
+     * @param WrappedJob $job
      *
      * @return bool
      */
@@ -96,7 +95,7 @@ class CronModel
 
 
     /**
-     * Flushes the database changes
+     * Flushes the database changes.
      */
     public function flush () : void
     {
