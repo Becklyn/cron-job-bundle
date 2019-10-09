@@ -37,5 +37,8 @@
         "psr-4": {
             "Tests\\Becklyn\\CronJobBundle\\": "tests/"
         }
-    }
+    },
+    "bin": [
+        "bin/cron"
+    ]
 }

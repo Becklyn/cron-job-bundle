@@ -1,3 +1,10 @@
+1.1.0
+=====
+
+*   Fixed invalid return types in `cron:run`
+*   Added a wrapper binary that should be called in the cron job (instead of directly calling the Symfony console).
+
+
 1.0.1
 =====
 

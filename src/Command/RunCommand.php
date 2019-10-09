@@ -141,6 +141,6 @@ class RunCommand extends Command
         }
 
         $this->lock->release();
-        return $jobFailed ? 0 : 1;
+        return $jobFailed ? 1 : 0;
     }
 }
