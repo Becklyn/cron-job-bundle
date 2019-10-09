@@ -11,8 +11,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Lock;
 
-class CronCommand extends Command
+/**
+ *
+ */
+class RunCommand extends Command
 {
     public static $defaultName = "cron:run";
 
@@ -35,12 +40,30 @@ class CronCommand extends Command
     private $logger;
 
 
-    public function __construct (CronJobRegistry $registry, CronModel $model, LoggerInterface $logger)
+    /**
+     * @var Lock
+     */
+    private $lock;
+
+
+    /**
+     * @param CronJobRegistry $registry
+     * @param CronModel       $model
+     * @param LoggerInterface $logger
+     * @param Factory         $lockFactory
+     */
+    public function __construct (
+        CronJobRegistry $registry,
+        CronModel $model,
+        LoggerInterface $logger,
+        Factory $lockFactory
+    )
     {
         parent::__construct();
         $this->registry = $registry;
         $this->logModel = $model;
         $this->logger = $logger;
+        $this->lock = $lockFactory->createLock("cron-run");
     }
 
 
@@ -51,6 +74,12 @@ class CronCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->title("Cron Jobs");
+
+        if (!$this->lock->acquire())
+        {
+            $io->warning("A previous cron command is still running.");
+            return 2;
+        }
 
         $now = new \DateTimeImmutable();
         $jobFailed = false;
@@ -111,6 +140,7 @@ class CronCommand extends Command
             }
         }
 
+        $this->lock->release();
         return $jobFailed ? 0 : 1;
     }
 }
