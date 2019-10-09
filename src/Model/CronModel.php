@@ -72,7 +72,7 @@ class CronModel
     {
         $run = new CronJobRun(
             $job->getKey(),
-            $status->isSuccessful(),
+            $status->isSucceeded(),
             $status->getLog(),
             $job->getSupposedLastRun()
         );

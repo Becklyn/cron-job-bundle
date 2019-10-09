@@ -7,7 +7,7 @@ class CronStatus
     /**
      * @var bool
      */
-    private $successful;
+    private $succeeded;
 
 
     /**
@@ -17,12 +17,12 @@ class CronStatus
 
 
     /**
-     * @param bool        $successful
+     * @param bool        $succeeded
      * @param string|null $log
      */
-    public function __construct (bool $successful, ?string $log = null)
+    public function __construct (bool $succeeded, ?string $log = null)
     {
-        $this->successful = $successful;
+        $this->succeeded = $succeeded;
         $this->log = $log;
     }
 
@@ -30,9 +30,9 @@ class CronStatus
     /**
      * @return bool
      */
-    public function isSuccessful () : bool
+    public function isSucceeded () : bool
     {
-        return $this->successful;
+        return $this->succeeded;
     }
 
 

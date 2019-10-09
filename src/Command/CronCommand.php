@@ -75,13 +75,13 @@ class CronCommand extends Command
                     $this->logModel->logRun($wrappedJob, $status);
                     $this->logModel->flush();
 
-                    if (!$status->isSuccessful())
+                    if (!$status->isSucceeded())
                     {
                         $jobFailed = true;
                     }
 
                     $io->writeln(
-                        $status->isSuccessful()
+                        $status->isSucceeded()
                             ? "<fg=green>Command succeeded.</>"
                             : "<fg=red>Command failed.</>"
                     );
