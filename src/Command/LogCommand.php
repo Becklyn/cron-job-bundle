@@ -31,6 +31,7 @@ class LogCommand extends Command
 
     /**
      * @param CronJobRegistry $registry
+     * @param CronModel       $model
      */
     public function __construct (CronJobRegistry $registry, CronModel $model)
     {
@@ -82,7 +83,7 @@ class LogCommand extends Command
 
 
     /**
-     * Logs the detauls.
+     * Logs the details.
      *
      * @param SymfonyStyle $io
      * @param string|null  $preselected

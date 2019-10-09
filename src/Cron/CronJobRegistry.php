@@ -28,6 +28,7 @@ class CronJobRegistry
     /**
      * @param CronJobInterface[]|iterable $jobs
      * @param LoggerInterface             $logger
+     * @param CronModel                   $logModel
      */
     public function __construct (iterable $jobs, LoggerInterface $logger, CronModel $logModel)
     {

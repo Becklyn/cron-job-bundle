@@ -11,9 +11,9 @@ class WrappedJobTest extends TestCase
     use JobTestTrait;
 
     /**
-     *
+     * @return void
      */
-    public function testBasicGetters ()
+    public function testBasicGetters () : void
     {
         $wrappedJob = new WrappedJob(
             $this->createJob("@daily"),
@@ -29,9 +29,9 @@ class WrappedJobTest extends TestCase
 
 
     /**
-     *
+     * @return void
      */
-    public function testDue ()
+    public function testDue () : void
     {
         $wrappedJob = new WrappedJob(
             $this->createJob("@daily"),
