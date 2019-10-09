@@ -11,7 +11,7 @@ class WrappedJobTest extends TestCase
     use JobTestTrait;
 
     /**
-     * @return void
+     *
      */
     public function testBasicGetters () : void
     {
@@ -29,7 +29,7 @@ class WrappedJobTest extends TestCase
 
 
     /**
-     * @return void
+     *
      */
     public function testDue () : void
     {
