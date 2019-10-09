@@ -55,8 +55,10 @@ class CronJobRun
 
 
     /**
-     * @param string $jobKey
-     * @param bool   $successful
+     * @param string             $jobKey
+     * @param bool               $successful
+     * @param string|null        $log
+     * @param \DateTimeImmutable $timeRun
      */
     public function __construct (string $jobKey, bool $successful, ?string $log, \DateTimeImmutable $timeRun)
     {

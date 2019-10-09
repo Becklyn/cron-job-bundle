@@ -26,6 +26,10 @@ class WrappedJob
     private $nextRun;
 
 
+    /**
+     * @param CronJobInterface   $job
+     * @param \DateTimeInterface $now
+     */
     public function __construct (CronJobInterface $job, \DateTimeInterface $now)
     {
         $cron = CronExpression::factory($job->getCronTab());

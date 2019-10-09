@@ -23,6 +23,8 @@ trait JobTestTrait
     /**
      * Creates a new job
      *
+     * @param string $cronTab
+     *
      * @return CronJobInterface
      */
     private function createJob (string $cronTab) : CronJobInterface
@@ -35,23 +37,38 @@ trait JobTestTrait
             private $cronTab;
 
 
+            /**
+             * @param string $cronTab
+             */
             public function __construct (string $cronTab)
             {
                 $this->cronTab = $cronTab;
             }
 
+
+            /**
+             * @return string
+             */
             public function getCronTab () : string
             {
                 return $this->cronTab;
             }
 
 
+            /**
+             * @return string
+             */
             public function getName () : string
             {
                 return "My Job";
             }
 
 
+            /**
+             * @param SymfonyStyle $io
+             *
+             * @return CronStatus
+             */
             public function execute (SymfonyStyle $io) : CronStatus
             {
                 return new CronStatus(true);
