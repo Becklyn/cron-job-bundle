@@ -46,7 +46,7 @@ class LogCommand extends Command
     protected function configure () : void
     {
         $this
-            ->addOption("single", null, InputOption::VALUE_OPTIONAL, "Whether the log for a single job should be shown.", false);
+            ->addOption("single", null, InputOption::VALUE_OPTIONAL, "Whether the log for a single job should be shown. You can optionally provide a FQCN to a cron task to only show its logs.", false);
     }
 
 
