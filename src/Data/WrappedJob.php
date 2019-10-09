@@ -21,12 +21,6 @@ class WrappedJob
 
 
     /**
-     * @var string
-     */
-    private $key;
-
-
-    /**
      * @var \DateTimeImmutable
      */
     private $nextRun;
@@ -39,7 +33,6 @@ class WrappedJob
         $this->job = $job;
         $this->supposedLastRun = \DateTimeImmutable::createFromMutable($cron->getPreviousRunDate($now, 0, true));
         $this->nextRun = \DateTimeImmutable::createFromMutable($cron->getNextRunDate($now, 0, true));
-        $this->key = \md5("{$job->getName()}:{$job->getCronTab()}");
     }
 
 
