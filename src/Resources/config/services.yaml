@@ -1,0 +1,13 @@
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+
+
+    Becklyn\CronJobBundle\:
+        resource: '../../*'
+        exclude: '../../{Data,Exception,Resources,CronJobBundle.php}'
+
+
+    Becklyn\CronJobBundle\Cron\CronJobRegistry:
+        $jobs: !tagged cron.job
