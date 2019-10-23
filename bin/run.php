@@ -15,7 +15,9 @@ if (is_file("{$projectDir}/MAINTENANCE"))
     exit(2);
 }
 
-passthru("{$projectDir}/bin/console cron:run --ansi", $returnVar);
+$php = \escapeshellcmd(\PHP_BINARY);
+$console = \escapeshellarg("{$projectDir}/bin/console");
+\passthru("{$php} {$console} cron:run --ansi", $returnVar);
 exit($returnVar);
 // endregion
 

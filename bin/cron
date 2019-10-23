@@ -1,3 +1,23 @@
 #!/usr/bin/env php
 <?php
-include __DIR__ . "/run.php";
+
+$php = "/usr/bin/env php";
+
+// try possible values for a specialized PHP version
+$possibleExecutables = [
+    '/usr/local/bin/php',
+];
+
+foreach ($possibleExecutables as $possibleExecutable)
+{
+    $result = \trim(\shell_exec("command -v {$possibleExecutable}"));
+
+    if ("" !== $result)
+    {
+        $php = $result;
+        break;
+    }
+}
+
+\passthru("{$php} " . \escapeshellarg(__DIR__ . "/run.php"));
+exit;
