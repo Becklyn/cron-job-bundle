@@ -10,7 +10,7 @@ $possibleExecutables = [
 
 foreach ($possibleExecutables as $possibleExecutable)
 {
-    $result = trim(shell_exec("command -v {$possibleExecutable}"));
+    $result = \trim(\shell_exec("command -v {$possibleExecutable}"));
 
     if ("" !== $result)
     {
@@ -19,5 +19,5 @@ foreach ($possibleExecutables as $possibleExecutable)
     }
 }
 
-passthru("{$php} " . \escapeshellarg(__DIR__ . "/run.php"));
+\passthru("{$php} " . \escapeshellarg(__DIR__ . "/run.php"));
 exit;
