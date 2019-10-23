@@ -1,3 +1,9 @@
+1.1.1
+=====
+
+*   Make used PHP version more stable in `bin/cron` and `bin/run`.
+
+
 1.1.0
 =====
 
