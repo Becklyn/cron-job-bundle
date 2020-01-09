@@ -5,9 +5,9 @@ namespace Becklyn\CronJobBundle\Model;
 use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Entity\CronJobRun;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class CronModel
 {
@@ -18,7 +18,7 @@ class CronModel
 
 
     /**
-     * @var EntityRepository
+     * @var ObjectRepository
      */
     private $repository;
 
@@ -54,7 +54,8 @@ class CronModel
      */
     public function findMostRecentRuns (WrappedJob $job, int $limit) : array
     {
-        return $this->repository->createQueryBuilder("log")
+        return $this->entityManager->createQueryBuilder()
+            ->select("log")
             ->andWhere("log.jobKey = :key")
             ->setParameter("key", $job->getKey())
             ->addOrderBy("log.timeRun", "desc")

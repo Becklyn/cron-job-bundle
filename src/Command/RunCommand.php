@@ -11,8 +11,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Lock\Factory;
-use Symfony\Component\Lock\Lock;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\LockInterface;
 
 /**
  *
@@ -41,7 +41,7 @@ class RunCommand extends Command
 
 
     /**
-     * @var Lock
+     * @var LockInterface
      */
     private $lock;
 
@@ -50,13 +50,13 @@ class RunCommand extends Command
      * @param CronJobRegistry $registry
      * @param CronModel       $model
      * @param LoggerInterface $logger
-     * @param Factory         $lockFactory
+     * @param LockFactory     $lockFactory
      */
     public function __construct (
         CronJobRegistry $registry,
         CronModel $model,
         LoggerInterface $logger,
-        Factory $lockFactory
+        LockFactory $lockFactory
     )
     {
         parent::__construct();
