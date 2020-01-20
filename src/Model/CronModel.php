@@ -6,8 +6,8 @@ use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Entity\CronJobRun;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectRepository;
 
 class CronModel
 {
@@ -18,7 +18,7 @@ class CronModel
 
 
     /**
-     * @var ObjectRepository
+     * @var EntityRepository
      */
     private $repository;
 
@@ -31,7 +31,10 @@ class CronModel
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $registry->getManager();
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(CronJobRun::class);
+
+        /** @var EntityRepository $repository */
+        $repository = $entityManager->getRepository(CronJobRun::class);
+        $this->repository = $repository;
     }
 
 
