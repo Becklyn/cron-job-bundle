@@ -57,7 +57,7 @@ class CronModel
      */
     public function findMostRecentRuns (WrappedJob $job, int $limit) : array
     {
-        return $this->entityManager->createQueryBuilder()
+        return $this->repository->createQueryBuilder("log")
             ->select("log")
             ->andWhere("log.jobKey = :key")
             ->setParameter("key", $job->getKey())
