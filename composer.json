@@ -16,10 +16,10 @@
         "doctrine/orm": "^2.6",
         "dragonmantank/cron-expression": "^2.3",
         "psr/log": "^1.1",
-        "symfony/console": "^4.3",
-        "symfony/framework-bundle": "^4.3",
-        "symfony/http-kernel": "^4.3",
-        "symfony/lock": "^4.3"
+        "symfony/console": "^4.4 || ^5.0",
+        "symfony/framework-bundle": "^4.4 || ^5.0",
+        "symfony/http-kernel": "^4.4 || ^5.0",
+        "symfony/lock": "^4.4 || ^5.0"
     },
     "require-dev": {
         "becklyn/php-cs": "^1.5",
