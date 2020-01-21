@@ -1,3 +1,10 @@
+next patch
+==========
+
+*   (improvement) Add support for Symfony 5.
+*   (internal) Deprecations in the `CronModel` and `RunCommand` have been fixed.
+
+
 1.1.1
 =====
 
