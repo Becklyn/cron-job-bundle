@@ -55,10 +55,6 @@ class CronJobRun
 
 
     /**
-     * @param string             $jobKey
-     * @param bool               $successful
-     * @param string|null        $log
-     * @param \DateTimeImmutable $timeRun
      */
     public function __construct (string $jobKey, bool $successful, ?string $log, \DateTimeImmutable $timeRun)
     {
@@ -70,7 +66,6 @@ class CronJobRun
 
 
     /**
-     * @return int|null
      */
     public function getId () : ?int
     {
@@ -80,7 +75,6 @@ class CronJobRun
 
 
     /**
-     * @return string
      */
     public function getJobKey () : string
     {
@@ -89,7 +83,6 @@ class CronJobRun
 
 
     /**
-     * @return bool
      */
     public function isSuccessful () : bool
     {
@@ -98,7 +91,6 @@ class CronJobRun
 
 
     /**
-     * @return string|null
      */
     public function getLog () : ?string
     {
@@ -107,7 +99,6 @@ class CronJobRun
 
 
     /**
-     * @return \DateTimeImmutable
      */
     public function getTimeRun () : \DateTimeImmutable
     {

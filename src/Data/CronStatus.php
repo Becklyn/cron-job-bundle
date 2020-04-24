@@ -17,8 +17,6 @@ class CronStatus
 
 
     /**
-     * @param bool        $succeeded
-     * @param string|null $log
      */
     public function __construct (bool $succeeded, ?string $log = null)
     {
@@ -28,7 +26,6 @@ class CronStatus
 
 
     /**
-     * @return bool
      */
     public function isSucceeded () : bool
     {
@@ -37,7 +34,6 @@ class CronStatus
 
 
     /**
-     * @return string|null
      */
     public function getLog () : ?string
     {
