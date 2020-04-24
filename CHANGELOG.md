@@ -1,3 +1,9 @@
+1.1.3
+=====
+
+*   (internal) Update bundle infrastructure + CI.
+
+
 1.1.2
 =====
 
