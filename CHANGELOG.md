@@ -1,3 +1,10 @@
+1.1.3
+=====
+
+*   (internal) Update bundle infrastructure + CI.
+*   (improvement) Add support for `doctrine-bundle v2+`
+
+
 1.1.2
 =====
 

@@ -24,7 +24,6 @@ class CronModel
 
 
     /**
-     * @param ManagerRegistry $registry
      */
     public function __construct (ManagerRegistry $registry)
     {
@@ -39,9 +38,7 @@ class CronModel
 
 
     /**
-     * @param WrappedJob $job
      *
-     * @return CronJobRun|null
      */
     public function findLastRun (WrappedJob $job) : ?CronJobRun
     {
@@ -50,9 +47,6 @@ class CronModel
 
 
     /**
-     * @param WrappedJob $job
-     * @param int        $limit
-     *
      * @return CronJobRun[]
      */
     public function findMostRecentRuns (WrappedJob $job, int $limit) : array
@@ -69,8 +63,6 @@ class CronModel
 
 
     /**
-     * @param WrappedJob $job
-     * @param CronStatus $status
      */
     public function logRun (WrappedJob $job, CronStatus $status) : void
     {
@@ -87,10 +79,6 @@ class CronModel
 
     /**
      * Returns whether the job is due.
-     *
-     * @param WrappedJob $job
-     *
-     * @return bool
      */
     public function isDue (WrappedJob $job) : bool
     {

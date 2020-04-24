@@ -1,4 +1,6 @@
-/vendor
-/composer.lock
 /.php_cs.cache
 /.phpunit.result.cache
+/composer.lock
+/vendor
+/vendor-bin/*/composer.lock
+/vendor-bin/*/vendor

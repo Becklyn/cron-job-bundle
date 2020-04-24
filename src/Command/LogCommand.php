@@ -30,8 +30,6 @@ class LogCommand extends Command
 
 
     /**
-     * @param CronJobRegistry $registry
-     * @param CronModel       $model
      */
     public function __construct (CronJobRegistry $registry, CronModel $model)
     {
@@ -52,10 +50,7 @@ class LogCommand extends Command
 
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
-     * @return int|null
      */
     protected function execute (InputInterface $input, OutputInterface $output) : ?int
     {
@@ -84,11 +79,6 @@ class LogCommand extends Command
 
     /**
      * Logs the details.
-     *
-     * @param SymfonyStyle $io
-     * @param string|null  $preselected
-     *
-     * @return int
      */
     private function logSingleJob (SymfonyStyle $io, ?string $preselected) : int
     {
@@ -157,10 +147,6 @@ class LogCommand extends Command
 
     /**
      * Logs an overview of all jobs.
-     *
-     * @param SymfonyStyle $io
-     *
-     * @return int
      */
     private function logAllJobs (SymfonyStyle $io) : int
     {
@@ -219,9 +205,7 @@ class LogCommand extends Command
 
 
     /**
-     * @param CronJobRun|null $lastRun
      *
-     * @return string
      */
     private function formatLastRun (?CronJobRun $lastRun) : string
     {
@@ -244,10 +228,7 @@ class LogCommand extends Command
 
 
     /**
-     * @param WrappedJob      $job
-     * @param CronJobRun|null $lastRun
      *
-     * @return string
      */
     private function formatNextRun (WrappedJob $job, ?CronJobRun $lastRun) : string
     {

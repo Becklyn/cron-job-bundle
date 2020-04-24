@@ -27,8 +27,6 @@ class WrappedJob
 
 
     /**
-     * @param CronJobInterface   $job
-     * @param \DateTimeInterface $now
      */
     public function __construct (CronJobInterface $job, \DateTimeInterface $now)
     {
@@ -41,7 +39,6 @@ class WrappedJob
 
 
     /**
-     * @return CronJobInterface
      */
     public function getJob () : CronJobInterface
     {
@@ -50,7 +47,6 @@ class WrappedJob
 
 
     /**
-     * @return \DateTimeImmutable
      */
     public function getSupposedLastRun () : \DateTimeImmutable
     {
@@ -59,7 +55,6 @@ class WrappedJob
 
 
     /**
-     * @return string
      */
     public function getKey () : string
     {
@@ -68,7 +63,6 @@ class WrappedJob
 
 
     /**
-     * @return \DateTimeImmutable
      */
     public function getNextRun () : \DateTimeImmutable
     {
@@ -77,9 +71,7 @@ class WrappedJob
 
 
     /**
-     * @param CronJobRun|null $lastRun
      *
-     * @return bool
      */
     public function isDue (?CronJobRun $lastRun) : bool
     {

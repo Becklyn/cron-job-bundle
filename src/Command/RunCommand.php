@@ -47,10 +47,6 @@ class RunCommand extends Command
 
 
     /**
-     * @param CronJobRegistry $registry
-     * @param CronModel       $model
-     * @param LoggerInterface $logger
-     * @param LockFactory     $lockFactory
      */
     public function __construct (
         CronJobRegistry $registry,
