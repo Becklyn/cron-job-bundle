@@ -2,6 +2,8 @@
 
 namespace Becklyn\CronJobBundle\Command;
 
+use Becklyn\CronJobBundle\Console\BufferedConsoleOutput;
+use Becklyn\CronJobBundle\Console\BufferedSymfonyStyle;
 use Becklyn\CronJobBundle\Cron\CronJobRegistry;
 use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
@@ -10,7 +12,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 
@@ -68,7 +69,9 @@ class RunCommand extends Command
      */
     protected function execute (InputInterface $input, OutputInterface $output) : ?int
     {
-        $io = new SymfonyStyle($input, $output);
+        $bufferedOutput = BufferedConsoleOutput::createFromOutput($output);
+        $io = new BufferedSymfonyStyle($input, $bufferedOutput);
+
         $io->title("Cron Jobs");
 
         if (!$this->lock->acquire())
@@ -96,6 +99,7 @@ class RunCommand extends Command
 
                 try
                 {
+                    $bufferedOutput->clearBufferedOutput();
                     $status = $job->execute($io);
                     $this->logModel->logRun($wrappedJob, $status);
                     $this->logModel->flush();

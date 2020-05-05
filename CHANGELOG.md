@@ -1,3 +1,10 @@
+2.0.0
+=====
+
+*   (bc) Update `CronJobInterface::execute()` to use a `BufferedSymfonyStyle`.
+*   (feature) Added `BufferedSymfonyStyle` to be able to pass the CLI output to the cron status log entry.
+
+
 1.1.3
 =====
 
