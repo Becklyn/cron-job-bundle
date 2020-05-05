@@ -2,10 +2,10 @@
 
 namespace Tests\Becklyn\CronJobBundle;
 
+use Becklyn\CronJobBundle\Console\BufferedSymfonyStyle;
 use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Entity\CronJobRun;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 trait JobTestTrait
 {
@@ -31,14 +31,11 @@ trait JobTestTrait
     {
         return new class ($cronTab) implements CronJobInterface
         {
-            /**
-             * @var string
-             */
+            /** @var string */
             private $cronTab;
 
 
             /**
-             * @param string $cronTab
              */
             public function __construct (string $cronTab)
             {
@@ -47,7 +44,6 @@ trait JobTestTrait
 
 
             /**
-             * @return string
              */
             public function getCronTab () : string
             {
@@ -56,7 +52,6 @@ trait JobTestTrait
 
 
             /**
-             * @return string
              */
             public function getName () : string
             {
@@ -65,11 +60,8 @@ trait JobTestTrait
 
 
             /**
-             * @param SymfonyStyle $io
-             *
-             * @return CronStatus
              */
-            public function execute (SymfonyStyle $io) : CronStatus
+            public function execute (BufferedSymfonyStyle $io) : CronStatus
             {
                 return new CronStatus(true);
             }

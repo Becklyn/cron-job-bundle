@@ -2,8 +2,8 @@
 
 namespace Becklyn\CronJobBundle\Cron;
 
+use Becklyn\CronJobBundle\Console\BufferedSymfonyStyle;
 use Becklyn\CronJobBundle\Data\CronStatus;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 interface CronJobInterface
 {
@@ -22,5 +22,5 @@ interface CronJobInterface
     /**
      * Runs the command.
      */
-    public function execute (SymfonyStyle $io) : CronStatus;
+    public function execute (BufferedSymfonyStyle $io) : CronStatus;
 }
