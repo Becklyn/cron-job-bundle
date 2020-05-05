@@ -100,6 +100,7 @@ class RunCommand extends Command
 
                 // Write error message
                 $io->writeln("<fg=red>Command failed.</>");
+                continue;
             }
 
             if (!$this->logModel->isDue($wrappedJob))
