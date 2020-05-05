@@ -90,42 +90,6 @@ class RunCommand extends Command
             try
             {
                 $wrappedJob = new WrappedJob($job, $now);
-
-                if (!$this->logModel->isDue($wrappedJob))
-                {
-                    $io->writeln("<fg=yellow>Not due</>");
-                    continue;
-                }
-
-                try
-                {
-                    $bufferedOutput->clearBufferedOutput();
-                    $status = $job->execute($io);
-                    $this->logModel->logRun($wrappedJob, $status);
-                    $this->logModel->flush();
-
-                    if (!$status->isSucceeded())
-                    {
-                        $jobFailed = true;
-                    }
-
-                    $io->writeln(
-                        $status->isSucceeded()
-                            ? "<fg=green>Command succeeded.</>"
-                            : "<fg=red>Command failed.</>"
-                    );
-                }
-                catch (\Exception $e)
-                {
-                    $this->logModel->logRun($wrappedJob, new CronStatus(false));
-                    $this->logModel->flush();
-                    $this->logger->error("Running the cron job failed with an exception: {message}", [
-                        "message" => $e->getMessage(),
-                        "exception" => $e,
-                    ]);
-
-                    $io->writeln("<fg=red>Command failed.</>");
-                }
             }
             catch (\InvalidArgumentException $exception)
             {
@@ -136,6 +100,42 @@ class RunCommand extends Command
                 ]);
 
                 // Write error message
+                $io->writeln("<fg=red>Command failed.</>");
+            }
+
+            if (!$this->logModel->isDue($wrappedJob))
+            {
+                $io->writeln("<fg=yellow>Not due</>");
+                continue;
+            }
+
+            try
+            {
+                $bufferedOutput->clearBufferedOutput();
+                $status = $job->execute($io);
+                $this->logModel->logRun($wrappedJob, $status);
+                $this->logModel->flush();
+
+                if (!$status->isSucceeded())
+                {
+                    $jobFailed = true;
+                }
+
+                $io->writeln(
+                    $status->isSucceeded()
+                        ? "<fg=green>Command succeeded.</>"
+                        : "<fg=red>Command failed.</>"
+                );
+            }
+            catch (\Exception $e)
+            {
+                $this->logModel->logRun($wrappedJob, new CronStatus(false));
+                $this->logModel->flush();
+                $this->logger->error("Running the cron job failed with an exception: {message}", [
+                    "message" => $e->getMessage(),
+                    "exception" => $e,
+                ]);
+
                 $io->writeln("<fg=red>Command failed.</>");
             }
         }

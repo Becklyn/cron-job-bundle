@@ -1,3 +1,9 @@
+2.0.1
+=====
+
+*   (improvement) Catch exception in correct place.
+
+
 2.0.0
 =====
 
