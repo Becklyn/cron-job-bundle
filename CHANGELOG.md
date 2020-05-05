@@ -2,6 +2,7 @@
 =====
 
 *   (improvement) Prevent cron job run if is in maintenance mode.
+*   (improvement) Increase TTL of run lock to 10 min.
 
 
 2.0.1

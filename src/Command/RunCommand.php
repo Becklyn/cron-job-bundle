@@ -52,7 +52,7 @@ class RunCommand extends Command
         $this->registry = $registry;
         $this->logModel = $model;
         $this->logger = $logger;
-        $this->lock = $lockFactory->createLock("cron-run");
+        $this->lock = $lockFactory->createLock("cron-run", 600);
         $this->maintenancePath = \rtrim($projectDir, "/") . "/MAINTENANCE";
     }
 
