@@ -22,29 +22,20 @@ class RunCommand extends Command
 {
     public static $defaultName = "cron:run";
 
-
-    /**
-     * @var CronJobRegistry
-     */
+    /** @var CronJobRegistry */
     private $registry;
 
-
-    /**
-     * @var CronModel
-     */
+    /** @var CronModel */
     private $logModel;
 
-
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
-
-    /**
-     * @var LockInterface
-     */
+    /** * @var LockInterface */
     private $lock;
+
+    /** @var string */
+    private $maintenancePath;
 
 
     /**
@@ -53,7 +44,8 @@ class RunCommand extends Command
         CronJobRegistry $registry,
         CronModel $model,
         LoggerInterface $logger,
-        LockFactory $lockFactory
+        LockFactory $lockFactory,
+        string $projectDir
     )
     {
         parent::__construct();
@@ -61,6 +53,7 @@ class RunCommand extends Command
         $this->logModel = $model;
         $this->logger = $logger;
         $this->lock = $lockFactory->createLock("cron-run");
+        $this->maintenancePath = \rtrim($projectDir, "/") . "/MAINTENANCE";
     }
 
 
@@ -73,6 +66,12 @@ class RunCommand extends Command
         $io = new BufferedSymfonyStyle($input, $bufferedOutput);
 
         $io->title("Cron Jobs");
+
+        if (\is_file($this->maintenancePath))
+        {
+            $io->warning("Can't run in MAINTENANCE mode.");
+            return 3;
+        }
 
         if (!$this->lock->acquire())
         {

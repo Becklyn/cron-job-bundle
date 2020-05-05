@@ -1,3 +1,9 @@
+2.0.2
+=====
+
+*   (improvement) Prevent cron job run if is in maintenance mode.
+
+
 2.0.1
 =====
 
