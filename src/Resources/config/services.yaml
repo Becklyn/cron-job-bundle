@@ -11,3 +11,6 @@ services:
 
     Becklyn\CronJobBundle\Cron\CronJobRegistry:
         $jobs: !tagged cron.job
+
+    Becklyn\CronJobBundle\Command\RunCommand:
+        $projectDir: '%kernel.project_dir%'
