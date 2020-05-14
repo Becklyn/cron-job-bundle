@@ -1,3 +1,9 @@
+2.0.2
+=====
+
+*   (improvement) Remove time limit, memory limit and disable profiler when running the cron jobs.
+
+
 2.0.1
 =====
 

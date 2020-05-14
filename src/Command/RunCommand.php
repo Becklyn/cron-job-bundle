@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 
@@ -37,6 +38,9 @@ class RunCommand extends Command
     /** @var string */
     private $maintenancePath;
 
+    /** @var Profiler|null */
+    private $profiler;
+
 
     /**
      */
@@ -45,7 +49,8 @@ class RunCommand extends Command
         CronModel $model,
         LoggerInterface $logger,
         LockFactory $lockFactory,
-        string $projectDir
+        string $projectDir,
+        ?Profiler $profiler = null
     )
     {
         parent::__construct();
@@ -54,6 +59,7 @@ class RunCommand extends Command
         $this->logger = $logger;
         $this->lock = $lockFactory->createLock("cron-run", 600);
         $this->maintenancePath = \rtrim($projectDir, "/") . "/MAINTENANCE";
+        $this->profiler = $profiler;
     }
 
 
@@ -64,6 +70,14 @@ class RunCommand extends Command
     {
         $bufferedOutput = BufferedConsoleOutput::createFromOutput($output);
         $io = new BufferedSymfonyStyle($input, $bufferedOutput);
+
+        \ini_set("memory_limit", "-1");
+        \set_time_limit(0);
+
+        if (null !== $this->profiler)
+        {
+            $this->profiler->disable();
+        }
 
         $io->title("Cron Jobs");
 
