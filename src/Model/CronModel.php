@@ -62,6 +62,25 @@ class CronModel
     }
 
 
+    public function removeOldLogsByStorageDuration (int $storageDuration) : bool
+    {
+        $compareDate = new \DateTimeImmutable("- {$storageDuration} days");
+
+        try {
+            $this->entityManager->createQueryBuilder()
+                ->delete(CronJobRun::class, "job")
+                ->where("job.timeRun < :storageDuration")
+                ->setParameter("storageDuration", $compareDate)
+                ->getQuery()
+                ->execute();
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+
     /**
      */
     public function logRun (WrappedJob $job, CronStatus $status) : void

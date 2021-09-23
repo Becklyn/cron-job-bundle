@@ -1,3 +1,9 @@
+2.1.0
+====
+
+* (feature) Introduced Bundleconfiguration to set the Duration when old cron job logs should be deleted.
+
+
 2.0.2
 =====
 
