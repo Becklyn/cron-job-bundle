@@ -55,11 +55,10 @@ class CronJobCleanUp implements CronJobInterface
     public function execute (BufferedSymfonyStyle $io) : CronStatus
     {
         try {
-            $success = $this->cronModel->removeOldLogsByLogTtl($this->logTtl);
+            $this->cronModel->removeOldLogsByLogTtl($this->logTtl);
+            return new CronStatus(true, $io->getBuffer());
         } catch (\Exception $e) {
-            $success = false;
+            return new CronStatus(false, $io->getBuffer());
         }
-
-        return new CronStatus($success, $io->getBuffer());
     }
 }

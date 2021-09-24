@@ -62,7 +62,7 @@ class CronModel
     }
 
 
-    public function removeOldLogsByLogTtl (int $logTtl) : bool
+    public function removeOldLogsByLogTtl (int $logTtl) : void
     {
         $this->entityManager->createQueryBuilder()
             ->delete(CronJobRun::class, "job")
