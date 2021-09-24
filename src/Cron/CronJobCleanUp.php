@@ -16,18 +16,18 @@ class CronJobCleanUp implements CronJobInterface
     /** @var CronModel $cronModel */
     private $cronModel;
 
-    /** @var int $storageDuration */
-    private $storageDuration;
+    /** @var int $logTtl */
+    private $logTtl;
 
 
     public function __construct
     (
         CronModel $cronModel,
-        int $storageDuration
+        int $logTtl
     )
     {
         $this->cronModel = $cronModel;
-        $this->storageDuration = $storageDuration;
+        $this->logTtl = $logTtl;
     }
 
 
@@ -54,7 +54,11 @@ class CronJobCleanUp implements CronJobInterface
      */
     public function execute (BufferedSymfonyStyle $io) : CronStatus
     {
-        $success = $this->cronModel->removeOldLogsByStorageDuration($this->storageDuration);
+        try {
+            $success = $this->cronModel->removeOldLogsByLogTtl($this->logTtl);
+        } catch (\Exception $e) {
+            $success = false;
+        }
 
         return new CronStatus($success, $io->getBuffer());
     }

@@ -18,9 +18,9 @@ class CronJobBundleConfiguration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
                 ->children()
-                ->integerNode("storage_duration")
+                ->integerNode("log_ttl")
                 ->defaultValue(30)
-                ->info("The Duration how long a Cron Job Log will be stored in the Database before it get's deleted in Days.")
+                ->info("The ttl of a cron job log entry in days.")
                 ->end()
             ->end();
 

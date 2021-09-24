@@ -62,22 +62,14 @@ class CronModel
     }
 
 
-    public function removeOldLogsByStorageDuration (int $storageDuration) : bool
+    public function removeOldLogsByLogTtl (int $logTtl) : bool
     {
-        $compareDate = new \DateTimeImmutable("- {$storageDuration} days");
-
-        try {
-            $this->entityManager->createQueryBuilder()
-                ->delete(CronJobRun::class, "job")
-                ->where("job.timeRun < :storageDuration")
-                ->setParameter("storageDuration", $compareDate)
-                ->getQuery()
-                ->execute();
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
+        $this->entityManager->createQueryBuilder()
+            ->delete(CronJobRun::class, "job")
+            ->where("job.timeRun < :logTtl")
+            ->setParameter("logTtl", new \DateTimeImmutable("- {$logTtl} days"))
+            ->getQuery()
+            ->execute();
     }
 
 

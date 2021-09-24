@@ -44,7 +44,7 @@ class CronJobBundle extends Bundle
                 );
 
                 $container->getDefinition(CronJobCleanUp::class)
-                    ->setArgument('$storageDuration', $config["storage_duration"]);
+                    ->setArgument('$logTtl', $config["log_ttl"]);
             }
 
 
