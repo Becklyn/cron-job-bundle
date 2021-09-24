@@ -2,6 +2,7 @@
 
 namespace Becklyn\CronJobBundle;
 
+use Becklyn\CronJobBundle\Cron\CronJobCleanUp;
 use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,13 +37,21 @@ class CronJobBundle extends Bundle
                 // load main services.yml
                 $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/Resources/config'));
                 $loader->load('services.yaml');
+
+                $config = $this->processConfiguration(
+                    new CronJobBundleConfiguration(),
+                    $configs
+                );
+
+                $container->getDefinition(CronJobCleanUp::class)
+                    ->setArgument('$logTtl', $config["log_ttl"]);
             }
 
 
             /**
              * @inheritDoc
              */
-            public function getAlias ()
+            public function getAlias () : string
             {
                 return "becklyn_cron_job";
             }

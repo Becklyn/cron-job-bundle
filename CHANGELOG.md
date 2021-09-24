@@ -1,3 +1,9 @@
+2.1.0
+====
+
+*   (feature) Automatically delete old cron job logs.
+
+
 2.0.2
 =====
 

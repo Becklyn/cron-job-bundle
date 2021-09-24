@@ -62,6 +62,17 @@ class CronModel
     }
 
 
+    public function removeOldLogsByLogTtl (int $logTtl) : void
+    {
+        $this->entityManager->createQueryBuilder()
+            ->delete(CronJobRun::class, "job")
+            ->where("job.timeRun < :logTtl")
+            ->setParameter("logTtl", new \DateTimeImmutable("- {$logTtl} days"))
+            ->getQuery()
+            ->execute();
+    }
+
+
     /**
      */
     public function logRun (WrappedJob $job, CronStatus $status) : void
