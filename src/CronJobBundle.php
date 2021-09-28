@@ -4,6 +4,7 @@ namespace Becklyn\CronJobBundle;
 
 use Becklyn\CronJobBundle\Cron\CronJobCleanUp;
 use Becklyn\CronJobBundle\Cron\CronJobInterface;
+use Becklyn\CronJobBundle\DependencyInjection\CronJobBundleConfiguration;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
