@@ -1,3 +1,8 @@
+2.1.2
+====
+
+*   (feature) Now supports PHP 8.
+
 2.1.1
 ====
 
