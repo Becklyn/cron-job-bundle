@@ -81,6 +81,7 @@ class CronModel
             $job->getKey(),
             $status->isSucceeded(),
             $status->getLog(),
+            $status->getErrorCount(),
             $job->getSupposedLastRun()
         );
 

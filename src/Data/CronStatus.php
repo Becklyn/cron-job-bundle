@@ -15,13 +15,19 @@ class CronStatus
      */
     private $log;
 
+    /**
+     * @var int
+     */
+    private $errorCount;
+
 
     /**
      */
-    public function __construct (bool $succeeded, ?string $log = null)
+    public function __construct (bool $succeeded, ?string $log = null, ?int $errorCount = null)
     {
         $this->succeeded = $succeeded;
         $this->log = $log;
+        $this->errorCount = $errorCount;
     }
 
 
@@ -38,5 +44,10 @@ class CronStatus
     public function getLog () : ?string
     {
         return $this->log;
+    }
+
+    public function getErrorCount () : ?int
+    {
+        return $this->errorCount;
     }
 }

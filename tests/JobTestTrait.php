@@ -76,8 +76,8 @@ trait JobTestTrait
      *
      * @return CronJobRun
      */
-    private function createCronJobRun (string $date, bool $successful = true, ?string $log = null) : CronJobRun
+    private function createCronJobRun (string $date, bool $successful = true, ?string $log = null, ?int $errorCount = null) : CronJobRun
     {
-        return new CronJobRun("test", $successful, $log, $this->createDateTime($date));
+        return new CronJobRun("test", $successful, $log, $errorCount, $this->createDateTime($date));
     }
 }

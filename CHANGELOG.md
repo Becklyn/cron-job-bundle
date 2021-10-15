@@ -1,3 +1,8 @@
+2.1.3
+====
+
+*   (feature) Add column `error_count`.
+
 2.1.2
 ====
 

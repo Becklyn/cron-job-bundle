@@ -53,14 +53,20 @@ class CronJobRun
      */
     private $timeRun;
 
+    /**
+     * @var int|null
+     * @ORM\Column(name="error_count", type="integer", nullable=true)
+     */
+    private $errorCount;
 
     /**
      */
-    public function __construct (string $jobKey, bool $successful, ?string $log, \DateTimeImmutable $timeRun)
+    public function __construct (string $jobKey, bool $successful, ?string $log, ?int $errorCount, \DateTimeImmutable $timeRun)
     {
         $this->jobKey = $jobKey;
         $this->successful = $successful;
         $this->log = $log;
+        $this->errorCount = $errorCount;
         $this->timeRun = $timeRun;
     }
 
@@ -104,4 +110,10 @@ class CronJobRun
     {
         return $this->timeRun;
     }
+
+    public function getErrorCount(): ?int
+    {
+        return $this->errorCount;
+    }
+
 }
