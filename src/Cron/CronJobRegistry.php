@@ -60,6 +60,34 @@ class CronJobRegistry
     }
 
 
+    public function getJobByKey (string $key) : ?CronJobInterface
+    {
+        foreach ($this->jobs as $job)
+        {
+            if ($key === \get_class($job))
+            {
+                return $job;
+            }
+        }
+
+        return null;
+    }
+
+
+    public function getJobByChoice (string $choice) : ?CronJobInterface
+    {
+        foreach ($this->jobs as $job)
+        {
+            if ($choice === $job->getName() . " -> " . \get_class($job))
+            {
+                return $job;
+            }
+        }
+
+        return null;
+    }
+
+
     /**
      */
     public function hasJobs () : bool

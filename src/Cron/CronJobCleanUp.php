@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace Becklyn\CronJobBundle\Cron;
 
 use Becklyn\CronJobBundle\Console\BufferedSymfonyStyle;
@@ -9,14 +8,15 @@ use Becklyn\CronJobBundle\Model\CronModel;
 
 /**
  * @author Marco Woehr <mw@becklyn.com>
+ *
  * @since 2021-09-23
  */
 class CronJobCleanUp implements CronJobInterface
 {
-    /** @var CronModel $cronModel */
+    /** @var CronModel */
     private $cronModel;
 
-    /** @var int $logTtl */
+    /** @var int */
     private $logTtl;
 
 

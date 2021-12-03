@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * @author Marco Woehr <mw@becklyn.com>
+ *
  * @since 2021-09-23
  */
 class CronJobBundleConfiguration implements ConfigurationInterface
