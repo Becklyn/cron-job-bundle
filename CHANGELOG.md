@@ -2,6 +2,7 @@
 ====
 
 *   (feature) Users can now select dedicated jobs or single jobs to be executed via CLI (see cron:run -h for avalible commands).
+*   (internal) Replace TravisCI with GitHub Actions.
 
 
 2.1.2
