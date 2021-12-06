@@ -3,6 +3,7 @@
 
 *   (feature) Users can now select dedicated jobs or single jobs to be executed via CLI (see cron:run -h for avalible commands).
 *   (internal) Replace TravisCI with GitHub Actions.
+*   (improvement) Bump minimum PHP 7 version to 7.4.
 
 
 2.1.2
