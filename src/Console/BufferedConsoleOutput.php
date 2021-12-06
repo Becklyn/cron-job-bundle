@@ -8,7 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class BufferedConsoleOutput extends ConsoleOutput
 {
-    private $buffer = "";
+    private string $buffer = "";
+
 
     /**
      * @inheritDoc
@@ -19,6 +20,9 @@ final class BufferedConsoleOutput extends ConsoleOutput
     }
 
 
+    /**
+     * @inheritDoc
+     */
     protected function doWrite (string $message, bool $newline) : void
     {
         parent::doWrite($message, $newline);
@@ -32,17 +36,12 @@ final class BufferedConsoleOutput extends ConsoleOutput
     }
 
 
-    /**
-     */
     public function getBufferedOutput () : string
     {
         return $this->buffer;
     }
 
 
-    /**
-     *
-     */
     public function clearBufferedOutput () : void
     {
         $this->buffer = "";

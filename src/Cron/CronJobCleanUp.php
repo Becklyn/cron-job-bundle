@@ -13,15 +13,11 @@ use Becklyn\CronJobBundle\Model\CronModel;
  */
 class CronJobCleanUp implements CronJobInterface
 {
-    /** @var CronModel */
-    private $cronModel;
-
-    /** @var int */
-    private $logTtl;
+    private CronModel $cronModel;
+    private int $logTtl;
 
 
-    public function __construct
-    (
+    public function __construct (
         CronModel $cronModel,
         int $logTtl
     )

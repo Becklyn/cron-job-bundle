@@ -2,37 +2,18 @@
 
 namespace Becklyn\CronJobBundle\Cron;
 
-use Becklyn\CronJobBundle\Model\CronModel;
-use Psr\Log\LoggerInterface;
-
 class CronJobRegistry
 {
-    /**
-     * @var CronJobInterface[]|iterable
-     */
-    private $jobs;
-
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-
-    /**
-     * @var CronModel
-     */
-    private $logModel;
+    /** @var CronJobInterface[]|iterable */
+    private iterable $jobs;
 
 
     /**
      * @param CronJobInterface[]|iterable $jobs
      */
-    public function __construct (iterable $jobs, LoggerInterface $logger, CronModel $logModel)
+    public function __construct (iterable $jobs)
     {
         $this->jobs = $jobs;
-        $this->logger = $logger;
-        $this->logModel = $logModel;
     }
 
 
@@ -65,20 +46,6 @@ class CronJobRegistry
         foreach ($this->jobs as $job)
         {
             if ($key === \get_class($job))
-            {
-                return $job;
-            }
-        }
-
-        return null;
-    }
-
-
-    public function getJobByChoice (string $choice) : ?CronJobInterface
-    {
-        foreach ($this->jobs as $job)
-        {
-            if ($choice === $job->getName() . " -> " . \get_class($job))
             {
                 return $job;
             }

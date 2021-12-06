@@ -16,21 +16,10 @@ class LogCommand extends Command
 {
     public static $defaultName = "cron:log";
 
-
-    /**
-     * @var CronJobRegistry
-     */
-    private $registry;
+    private CronJobRegistry $registry;
+    private CronModel $model;
 
 
-    /**
-     * @var CronModel
-     */
-    private $model;
-
-
-    /**
-     */
     public function __construct (CronJobRegistry $registry, CronModel $model)
     {
         parent::__construct();
@@ -49,9 +38,6 @@ class LogCommand extends Command
     }
 
 
-    /**
-     *
-     */
     protected function execute (InputInterface $input, OutputInterface $output) : ?int
     {
         $io = new SymfonyStyle($input, $output);
@@ -204,9 +190,6 @@ class LogCommand extends Command
     }
 
 
-    /**
-     *
-     */
     private function formatLastRun (?CronJobRun $lastRun) : string
     {
         if (null === $lastRun)
@@ -227,9 +210,6 @@ class LogCommand extends Command
     }
 
 
-    /**
-     *
-     */
     private function formatNextRun (WrappedJob $job, ?CronJobRun $lastRun) : string
     {
         $isDue = $job->isDue($lastRun);
