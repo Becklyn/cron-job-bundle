@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * @author Marco Woehr <mw@becklyn.com>
+ *
  * @since 2021-09-23
  */
 class CronJobBundleConfiguration implements ConfigurationInterface
@@ -18,8 +19,8 @@ class CronJobBundleConfiguration implements ConfigurationInterface
         $treeBuilder->getRootNode()
                 ->children()
                 ->integerNode("log_ttl")
-                ->defaultValue(30)
-                ->info("The ttl of a cron job log entry in days.")
+                    ->defaultValue(30)
+                    ->info("The ttl of a cron job log entry in days.")
                 ->end()
             ->end();
 

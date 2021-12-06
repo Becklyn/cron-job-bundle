@@ -8,26 +8,11 @@ use Cron\CronExpression;
 
 class WrappedJob
 {
-    /**
-     * @var CronJobInterface
-     */
-    private $job;
+    private CronJobInterface $job;
+    private \DateTimeImmutable $supposedLastRun;
+    private \DateTimeImmutable $nextRun;
 
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $supposedLastRun;
-
-
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $nextRun;
-
-
-    /**
-     */
     public function __construct (CronJobInterface $job, \DateTimeInterface $now)
     {
         $cron = CronExpression::factory($job->getCronTab());
@@ -38,41 +23,30 @@ class WrappedJob
     }
 
 
-    /**
-     */
     public function getJob () : CronJobInterface
     {
         return $this->job;
     }
 
 
-    /**
-     */
     public function getSupposedLastRun () : \DateTimeImmutable
     {
         return $this->supposedLastRun;
     }
 
 
-    /**
-     */
     public function getKey () : string
     {
         return \get_class($this->job);
     }
 
 
-    /**
-     */
     public function getNextRun () : \DateTimeImmutable
     {
         return $this->nextRun;
     }
 
 
-    /**
-     *
-     */
     public function isDue (?CronJobRun $lastRun) : bool
     {
         return null === $lastRun || $lastRun->getTimeRun() < $this->supposedLastRun;

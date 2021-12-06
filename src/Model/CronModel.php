@@ -11,20 +11,10 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class CronModel
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private EntityRepository $repository;
 
 
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
-
-
-    /**
-     */
     public function __construct (ManagerRegistry $registry)
     {
         /** @var EntityManagerInterface $entityManager */
@@ -37,9 +27,6 @@ class CronModel
     }
 
 
-    /**
-     *
-     */
     public function findLastRun (WrappedJob $job) : ?CronJobRun
     {
         return $this->findMostRecentRuns($job, 1)[0] ?? null;
@@ -73,8 +60,6 @@ class CronModel
     }
 
 
-    /**
-     */
     public function logRun (WrappedJob $job, CronStatus $status) : void
     {
         $run = new CronJobRun(

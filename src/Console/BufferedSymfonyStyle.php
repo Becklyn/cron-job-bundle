@@ -8,10 +8,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class BufferedSymfonyStyle extends SymfonyStyle
 {
-    /** @var OutputInterface */
-    private $output;
+    private OutputInterface $output;
 
 
+    /**
+     * @inheritDoc
+     */
     public function __construct(InputInterface $input, OutputInterface $output)
     {
         parent::__construct($input, $output);
@@ -19,8 +21,6 @@ final class BufferedSymfonyStyle extends SymfonyStyle
     }
 
 
-    /**
-     */
     public function getBuffer () : string
     {
         return ($this->output instanceof BufferedConsoleOutput)

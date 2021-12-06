@@ -15,47 +15,36 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CronJobRun
 {
+    //region Fields
     /**
-     * @var int|null
-     *
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(name="id", type="integer")
      */
-    private $id;
-
+    private ?int $id = null;
 
     /**
-     * @var string
      * @ORM\Column(name="job_key", type="string", length=255)
      */
-    private $jobKey;
-
+    private string $jobKey;
 
     /**
-     * @var bool
      * @ORM\Column(name="is_successful", type="boolean")
      */
-    private $successful;
-
+    private bool $successful;
 
     /**
-     * @var string|null
      * @ORM\Column(name="log", type="text", nullable=true)
      */
-    private $log;
-
+    private ?string $log;
 
     /**
-     * @var \DateTimeImmutable
-     *
      * @ORM\Column(name="time_run", type="datetime_immutable")
      */
-    private $timeRun;
+    private \DateTimeImmutable $timeRun;
+    //endregion
 
 
-    /**
-     */
     public function __construct (string $jobKey, bool $successful, ?string $log, \DateTimeImmutable $timeRun)
     {
         $this->jobKey = $jobKey;
@@ -65,43 +54,34 @@ class CronJobRun
     }
 
 
-    /**
-     */
+    //region Field Accessors
     public function getId () : ?int
     {
         return $this->id;
     }
 
 
-
-    /**
-     */
     public function getJobKey () : string
     {
         return $this->jobKey;
     }
 
 
-    /**
-     */
     public function isSuccessful () : bool
     {
         return $this->successful;
     }
 
 
-    /**
-     */
     public function getLog () : ?string
     {
         return $this->log;
     }
 
 
-    /**
-     */
     public function getTimeRun () : \DateTimeImmutable
     {
         return $this->timeRun;
     }
+    //endregion
 }

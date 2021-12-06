@@ -4,20 +4,10 @@ namespace Becklyn\CronJobBundle\Data;
 
 class CronStatus
 {
-    /**
-     * @var bool
-     */
-    private $succeeded;
+    private bool $succeeded;
+    private ?string $log;
 
 
-    /**
-     * @var string|null
-     */
-    private $log;
-
-
-    /**
-     */
     public function __construct (bool $succeeded, ?string $log = null)
     {
         $this->succeeded = $succeeded;
@@ -25,16 +15,12 @@ class CronStatus
     }
 
 
-    /**
-     */
     public function isSucceeded () : bool
     {
         return $this->succeeded;
     }
 
 
-    /**
-     */
     public function getLog () : ?string
     {
         return $this->log;
