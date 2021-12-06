@@ -19,9 +19,6 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 
-/**
- *
- */
 class RunCommand extends Command
 {
     public static $defaultName = "cron:run";
@@ -30,27 +27,14 @@ class RunCommand extends Command
     private const FORCED_RUN = "forced-run";
     private const DEFAULT_ANSWER = "Execute all Jobs";
 
-    /** @var CronJobRegistry */
-    private $registry;
-
-    /** @var CronModel */
-    private $logModel;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** * @var LockInterface */
-    private $lock;
-
-    /** @var string */
-    private $maintenancePath;
-
-    /** @var Profiler|null */
-    private $profiler;
+    private CronJobRegistry $registry;
+    private CronModel $logModel;
+    private LoggerInterface $logger;
+    private LockInterface $lock;
+    private string $maintenancePath;
+    private ?Profiler $profiler;
 
 
-    /**
-     */
     public function __construct (
         CronJobRegistry $registry,
         CronModel $model,
@@ -88,8 +72,8 @@ class RunCommand extends Command
     protected function execute (InputInterface $input, OutputInterface $output) : ?int
     {
         $isInteractive = $input->isInteractive();
-        $jobs = $this->registry->getAllJobs();
-        $allowedAnswers = [self::DEFAULT_ANSWER];
+        $allCronJobs = $this->registry->getAllJobs();
+        $cronJobsToExecute = $allCronJobs;
 
         $optionRunSingleJob = $input->getOption(self::RUN_SINGLE_JOB);
         $optionForcedRun = $input->getOption(self::FORCED_RUN);
@@ -110,12 +94,14 @@ class RunCommand extends Command
         if (\is_file($this->maintenancePath))
         {
             $io->warning("Can't run in MAINTENANCE mode.");
+
             return 3;
         }
 
         if (!$this->lock->acquire())
         {
             $io->warning("A previous cron command is still running.");
+
             return self::INVALID;
         }
 
@@ -123,70 +109,85 @@ class RunCommand extends Command
 
         if ($isInteractive && $optionForcedRun && null === $optionRunSingleJob)
         {
-            foreach ($jobs as $job)
-            {
-                $allowedAnswers[] = $job->getName() . " -> " . \get_class($job);
-            }
+            $cronJobChoiceList = $this->buildCronJobChoiceList($allCronJobs);
 
             $helper = $this->getHelper("question");
             $question = (new ChoiceQuestion(
                 "<fg=bright-magenta>Select the jobs you wan't to run. (Values must be comma seperated)</> \n",
-                $allowedAnswers,
+                \array_keys($cronJobChoiceList),
                 0
             ))
                 ->setMultiselect(true)
-                ->setErrorMessage("invalid choice");
+                ->setErrorMessage("Invalid Cron Job '%s' selected. Please select a valid Cron Job to run.");
 
             $choices = $helper->ask($input, $output, $question);
 
-            foreach ($choices as $key => $choice)
+            foreach ($choices as $choice)
             {
                 if (self::DEFAULT_ANSWER === $choice)
                 {
-                    foreach ($jobs as $job)
-                    {
-                        $commandStatus = $this->executeJobAndGetStatus($job, $io, $bufferedOutput, $optionForcedRun);
-                    }
+                    $cronJobsToExecute = $allCronJobs;
 
-                    $this->lock->release();
-                    return $commandStatus;
+                    // We can break here since we're executing all cron jobs anyway.
+                    break;
                 }
 
-                $selectedJob = $this->registry->getJobByChoice($choice);
+                $selectedJob = $cronJobChoiceList[$choice] ?? null;
 
                 if (null === $selectedJob)
                 {
                     $io->writeln("<fg=red>Job key not found.</>");
+
                     return self::FAILURE;
                 }
 
-                $commandStatus = $this->executeJobAndGetStatus($selectedJob, $io, $bufferedOutput, $optionForcedRun);
+                $cronJobsToExecute[] = $selectedJob;
             }
         }
-
-        if (null !== $optionRunSingleJob)
+        elseif (null !== $optionRunSingleJob)
         {
-            $job = $this->registry->getJobByKey($optionRunSingleJob);
+            $selectedJob = $this->registry->getJobByKey($optionRunSingleJob);
 
-            if (null === $job)
+            if (null === $selectedJob)
             {
                 $io->writeln("<fg=red>Job key not found.</>");
+
                 return self::FAILURE;
             }
 
-            return $this->executeJobAndGetStatus($job, $io, $bufferedOutput, $optionForcedRun);
+            $cronJobsToExecute = [$selectedJob];
         }
 
-        if ((!$isInteractive && $optionForcedRun) || ($isInteractive && !$optionForcedRun))
+        foreach ($cronJobsToExecute as $job)
         {
-            foreach ($jobs as $job)
-            {
-                $commandStatus = $this->executeJobAndGetStatus($job, $io, $bufferedOutput, $optionForcedRun);
-            }
+            $commandStatus &= $this->executeJobAndGetStatus($job, $io, $bufferedOutput, $optionForcedRun);
         }
 
         $this->lock->release();
+
         return $commandStatus;
+    }
+
+
+    /**
+     * @param CronJobInterface[] $availableCronJobs
+     *
+     * @return array<string, ?CronJobInterface>
+     */
+    private function buildCronJobChoiceList (array $availableCronJobs) : array
+    {
+        $cronJobChoices = [
+            self::DEFAULT_ANSWER => null,
+        ];
+
+        foreach ($availableCronJobs as $job)
+        {
+            $choice = $job->getName() . " -> " . \get_class($job);
+
+            $cronJobChoices[$choice] = $job;
+        }
+
+        return $cronJobChoices;
     }
 
 
@@ -214,12 +215,14 @@ class RunCommand extends Command
 
             // Write error message
             $io->writeln("<fg=red>Command failed.</>");
+
             return self::FAILURE;
         }
 
-        if (!$this->logModel->isDue($wrappedJob) && !$optionForcedRun)
+        if (!$optionForcedRun && !$this->logModel->isDue($wrappedJob))
         {
             $io->writeln("<fg=yellow>Not due</>");
+
             return self::FAILURE;
         }
 
@@ -240,19 +243,22 @@ class RunCommand extends Command
                     ? "<fg=green>Command succeeded.</>"
                     : "<fg=red>Command failed.</>"
             );
+
+            return $commandStatus;
         }
         catch (\Exception $e)
         {
             $this->logModel->logRun($wrappedJob, new CronStatus(false));
             $this->logModel->flush();
+
             $this->logger->error("Running the cron job failed with an exception: {message}", [
                 "message" => $e->getMessage(),
                 "exception" => $e,
             ]);
 
             $io->writeln("<fg=red>Command failed.</>");
-        }
 
-        return $commandStatus;
+            return self::FAILURE;
+        }
     }
 }
