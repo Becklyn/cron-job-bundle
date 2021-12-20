@@ -10,6 +10,7 @@ use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Model\CronModel;
 use Psr\Log\LoggerInterface;
+use function \Sentry\captureException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
-use function \Sentry\captureException;
 
 class RunCommand extends Command
 {
