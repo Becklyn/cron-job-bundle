@@ -1,6 +1,13 @@
 2.1.3
 ====
 
+*   (feature) Implementation of Sentry logging.
+*   (bug) Fix `RunCommand` to execute User given jobs via CLI.
+
+
+2.1.3
+====
+
 *   (feature) Users can now select dedicated jobs or single jobs to be executed via CLI (see cron:run -h for avalible commands).
 *   (internal) Replace TravisCI with GitHub Actions.
 *   (improvement) Bump minimum PHP 7 version to 7.4.
