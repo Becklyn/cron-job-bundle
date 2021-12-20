@@ -254,6 +254,7 @@ class RunCommand extends Command
         {
             if (\class_exists("\\Sentry\\SentrySdk"))
             {
+                /** @phpstan-ignore-next-line */
                 \Sentry\captureException($e);
             }
 
