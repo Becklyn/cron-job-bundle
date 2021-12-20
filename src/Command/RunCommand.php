@@ -253,7 +253,7 @@ class RunCommand extends Command
         }
         catch (\Exception $e)
         {
-            if (\class_exists("\Sentry\Client"))
+            if (\class_exists("\\Sentry\\Client"))
             {
                 captureException($e);
             }
