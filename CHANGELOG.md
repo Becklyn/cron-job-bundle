@@ -1,3 +1,10 @@
+2.2.0
+====
+
+*   (feature) Implementation of Sentry logging.
+*   (bug) Fix `RunCommand` to execute User given jobs via CLI.
+
+
 2.1.3
 ====
 

@@ -73,7 +73,7 @@ class RunCommand extends Command
     {
         $isInteractive = $input->isInteractive();
         $allCronJobs = $this->registry->getAllJobs();
-        $cronJobsToExecute = $allCronJobs;
+        $cronJobsToExecute = [];
 
         $optionRunSingleJob = $input->getOption(self::RUN_SINGLE_JOB);
         $optionForcedRun = $input->getOption(self::FORCED_RUN);
@@ -156,6 +156,10 @@ class RunCommand extends Command
             }
 
             $cronJobsToExecute = [$selectedJob];
+        }
+        else
+        {
+            $cronJobsToExecute = $allCronJobs;
         }
 
         foreach ($cronJobsToExecute as $job)
@@ -248,6 +252,12 @@ class RunCommand extends Command
         }
         catch (\Exception $e)
         {
+            if (\class_exists("\\Sentry\\SentrySdk"))
+            {
+                /** @phpstan-ignore-next-line */
+                \Sentry\captureException($e);
+            }
+
             $this->logModel->logRun($wrappedJob, new CronStatus(false));
             $this->logModel->flush();
 
