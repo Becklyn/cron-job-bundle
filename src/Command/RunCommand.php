@@ -10,7 +10,6 @@ use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Model\CronModel;
 use Psr\Log\LoggerInterface;
-use function Sentry\captureException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -253,9 +252,9 @@ class RunCommand extends Command
         }
         catch (\Exception $e)
         {
-            if (\class_exists("\\Sentry\\Client"))
+            if (\class_exists("\\Sentry\\SentrySdk"))
             {
-                captureException($e);
+                \Sentry\captureException($e);
             }
 
             $this->logModel->logRun($wrappedJob, new CronStatus(false));
