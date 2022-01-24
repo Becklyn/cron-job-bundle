@@ -16,6 +16,7 @@
         "doctrine/orm": "^2.6",
         "dragonmantank/cron-expression": "^2.3",
         "psr/log": "^1.1",
+        "sentry/sentry-symfony": "^4.2",
         "symfony/console": "^4.4 || ^5.0",
         "symfony/framework-bundle": "^4.4 || ^5.0",
         "symfony/http-kernel": "^4.4 || ^5.0",
@@ -39,6 +40,9 @@
         "bin/cron"
     ],
     "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        },
         "sort-packages": true
     }
 }

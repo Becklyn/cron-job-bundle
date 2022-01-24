@@ -1,3 +1,9 @@
+2.3.0
+=====
+
+*   (feature) Provide additional meta-information about crashed `CronJobInterface` to Sentry.
+
+
 2.2.0
 ====
 

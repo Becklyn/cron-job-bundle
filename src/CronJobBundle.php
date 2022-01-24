@@ -5,10 +5,12 @@ namespace Becklyn\CronJobBundle;
 use Becklyn\CronJobBundle\Cron\CronJobCleanUp;
 use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Becklyn\CronJobBundle\DependencyInjection\CronJobBundleConfiguration;
+use Becklyn\CronJobBundle\Sentry\Integration\CronJobSentryIntegration;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -30,7 +32,7 @@ class CronJobBundle extends Bundle
      */
     public function getContainerExtension () : ?ExtensionInterface
     {
-        return new class() extends Extension {
+        return new class() extends Extension implements PrependExtensionInterface {
             /**
              * @inheritdoc
              */
@@ -56,6 +58,21 @@ class CronJobBundle extends Bundle
             public function getAlias () : string
             {
                 return "becklyn_cron_job";
+            }
+
+
+            /**
+             * @inheritDoc
+             */
+            public function prepend (ContainerBuilder $container) : void
+            {
+                $container->prependExtensionConfig("sentry", [
+                    "options" => [
+                        "integrations" => [
+                            CronJobSentryIntegration::class,
+                        ],
+                    ],
+                ]);
             }
         };
     }
