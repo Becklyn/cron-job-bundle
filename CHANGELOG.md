@@ -3,6 +3,7 @@
 
 *   (feature) Try to recover faulty `EntityManager` connection in case a Cron crashes unexpectedly to make sure the `CronJobRun` gets persisted, to avoid immediate re-runs.
 *   (bug) Pass in entire Cron output to `CronJobRun` when a Cron crashes unexpectedly.
+*   (internal) Remove project-specific `phpstan.neon`.
 
 
 2.3.0
