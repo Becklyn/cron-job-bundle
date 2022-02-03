@@ -6,9 +6,11 @@ use Becklyn\CronJobBundle\Console\BufferedConsoleOutput;
 use Becklyn\CronJobBundle\Console\BufferedSymfonyStyle;
 use Becklyn\CronJobBundle\Cron\CronJobInterface;
 use Becklyn\CronJobBundle\Cron\CronJobRegistry;
-use Becklyn\CronJobBundle\Data\CronStatus;
 use Becklyn\CronJobBundle\Data\WrappedJob;
+use Becklyn\CronJobBundle\Entity\CronJobRun;
 use Becklyn\CronJobBundle\Model\CronModel;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use function Sentry\captureException;
 use Sentry\EventHint;
@@ -35,6 +37,7 @@ class RunCommand extends Command
     private LockInterface $lock;
     private string $maintenancePath;
     private ?Profiler $profiler;
+    private EntityManager $entityManager;
 
 
     public function __construct (
@@ -43,16 +46,23 @@ class RunCommand extends Command
         LoggerInterface $logger,
         LockFactory $lockFactory,
         string $projectDir,
-        ?Profiler $profiler = null
+        ?Profiler $profiler = null,
+        ManagerRegistry $doctrine
     )
     {
         parent::__construct();
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $doctrine->getManager();
+
         $this->registry = $registry;
         $this->logModel = $model;
         $this->logger = $logger;
         $this->lock = $lockFactory->createLock("cron-run", 600);
         $this->maintenancePath = \rtrim($projectDir, "/") . "/MAINTENANCE";
         $this->profiler = $profiler;
+        $this->entityManager = $entityManager;
+
         $this->addOption(
             self::RUN_SINGLE_JOB,
             "s",
@@ -266,8 +276,38 @@ class RunCommand extends Command
             captureException($e, $eventHint);
             //endregion
 
-            $this->logModel->logRun($wrappedJob, new CronStatus(false));
-            $this->logModel->flush();
+            $entityManager = $this->entityManager;
+
+            // Try to recover a faulty Doctrine connection so we can persist our CronJobRun to prevent immediate re-runs.
+            if (!$entityManager->isOpen())
+            {
+                try
+                {
+                    $entityManager = EntityManager::create(
+                        $entityManager->getConnection(),
+                        $entityManager->getConfiguration()
+                    );
+                }
+                catch (\Exception $e)
+                {
+                    $io->writeln("");
+                    $io->writeln("");
+                    $io->writeln(\sprintf(
+                        "Could not recover re-opening previously closed EntityManager connection. Encountered the following exception: '%s'.",
+                        $e->getMessage()
+                    ));
+                }
+            }
+
+            $run = new CronJobRun(
+                $wrappedJob->getKey(),
+                false,
+                $io->getBuffer(),
+                $wrappedJob->getSupposedLastRun()
+            );
+
+            $entityManager->persist($run);
+            $entityManager->flush();
 
             $this->logger->error("Running the cron job failed with an exception: {message}", [
                 "message" => $e->getMessage(),

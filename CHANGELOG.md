@@ -1,3 +1,10 @@
+2.4.0
+=====
+
+*   (feature) Try to recover faulty `EntityManager` connection in case a Cron crashes unexpectedly to make sure the `CronJobRun` gets persisted, to avoid immediate re-runs.
+*   (bug) Pass in entire Cron output to `CronJobRun` when a Cron crashes unexpectedly.
+
+
 2.3.0
 =====
 
