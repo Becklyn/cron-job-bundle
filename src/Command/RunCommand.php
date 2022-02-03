@@ -45,9 +45,9 @@ class RunCommand extends Command
         CronModel $model,
         LoggerInterface $logger,
         LockFactory $lockFactory,
+        ManagerRegistry $doctrine,
         string $projectDir,
-        ?Profiler $profiler = null,
-        ManagerRegistry $doctrine
+        ?Profiler $profiler = null
     )
     {
         parent::__construct();
