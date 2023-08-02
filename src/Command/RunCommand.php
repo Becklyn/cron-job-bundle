@@ -12,6 +12,7 @@ use Becklyn\CronJobBundle\Model\CronModel;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use function Sentry\captureException;
 use Sentry\EventHint;
 use Symfony\Component\Console\Command\Command;
@@ -123,7 +124,9 @@ class RunCommand extends Command
         {
             $cronJobChoiceList = $this->buildCronJobChoiceList($allCronJobs);
 
+            /** @var QuestionHelper $helper */
             $helper = $this->getHelper("question");
+
             $question = (new ChoiceQuestion(
                 "<fg=bright-magenta>Select the jobs you wan't to run. (Values must be comma seperated)</> \n",
                 \array_keys($cronJobChoiceList),
