@@ -15,7 +15,7 @@
         "doctrine/doctrine-bundle": "^1.12.13 || ^2.5.0",
         "doctrine/orm": "^2.11.1",
         "dragonmantank/cron-expression": "^v2.3.1",
-        "psr/log": "^1.1.4",
+        "psr/log": "^3.0.0",
         "sentry/sentry-symfony": "^4.2.6",
         "symfony/console": "^v5.4.3 || ^v6.0.3",
         "symfony/framework-bundle": "^v5.4.3 || ^v6.0.3",
@@ -41,7 +41,8 @@
     ],
     "config": {
         "allow-plugins": {
-            "composer/package-versions-deprecated": true
+            "composer/package-versions-deprecated": true,
+            "php-http/discovery": true
         },
         "sort-packages": true
     }

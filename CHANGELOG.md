@@ -1,3 +1,9 @@
+2.6.0
+=====
+
+*   (improvement) Add support for psr/log ^3.0.0.
+
+
 2.5.0
 =====
 
