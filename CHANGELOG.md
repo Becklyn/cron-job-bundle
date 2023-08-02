@@ -2,6 +2,7 @@
 =====
 
 *   (improvement) Add support for psr/log ^3.0.0.
+*   (internal) Remove support for PHP 7.4.
 
 
 2.5.0
