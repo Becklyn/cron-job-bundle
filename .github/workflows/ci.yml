@@ -22,6 +22,9 @@ jobs:
             - name: Composer Install
               run: composer install
 
+            - name: Composer Config
+              run: composer global config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
+
             - name: Composer Plugins
               run: composer global require ergebnis/composer-normalize bamarni/composer-bin-plugin php-coveralls/php-coveralls --no-interaction --prefer-dist --no-progress --no-suggest --no-suggest
 

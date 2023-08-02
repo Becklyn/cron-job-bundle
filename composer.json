@@ -42,8 +42,7 @@
     "config": {
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
-            "php-http/discovery": true,
-            "bamarni/composer-bin-plugin": true
+            "php-http/discovery": true
         },
         "sort-packages": true
     }
