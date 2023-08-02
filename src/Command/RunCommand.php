@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use function Sentry\captureException;
 use Sentry\EventHint;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -123,7 +124,9 @@ class RunCommand extends Command
         {
             $cronJobChoiceList = $this->buildCronJobChoiceList($allCronJobs);
 
+            /** @var QuestionHelper $helper */
             $helper = $this->getHelper("question");
+
             $question = (new ChoiceQuestion(
                 "<fg=bright-magenta>Select the jobs you wan't to run. (Values must be comma seperated)</> \n",
                 \array_keys($cronJobChoiceList),

@@ -1,3 +1,10 @@
+3.0.0
+=====
+
+*   (improvement) Add support for psr/log ^3.0.0.
+*   (BC) Remove support for PHP 7.4.
+
+
 2.5.0
 =====
 

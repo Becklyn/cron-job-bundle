@@ -6,9 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ *
  * @ORM\Table(
  *     name="cron_job_runs",
  *     indexes={
+ *
  *          @ORM\Index(name="job_key", columns={"job_key"})
  *     }
  * )
@@ -18,7 +20,9 @@ class CronJobRun
     //region Fields
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
      * @ORM\Column(name="id", type="integer")
      */
     private ?int $id = null;
