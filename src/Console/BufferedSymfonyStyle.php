@@ -8,7 +8,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class BufferedSymfonyStyle extends SymfonyStyle
 {
-    private OutputInterface $output;
+    private readonly OutputInterface $output;
 
 
     /**

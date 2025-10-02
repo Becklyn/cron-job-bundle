@@ -21,7 +21,7 @@ class CronJobSentryIntegration implements IntegrationInterface
                 $scope->addEventProcessor(
                     function (Event $event, ?EventHint $eventHint = null) : Event
                     {
-                        if (null === $eventHint)
+                        if (!$eventHint instanceof EventHint)
                         {
                             return $event;
                         }

@@ -10,7 +10,7 @@ jobs:
                 php-versions: ['8.0', '8.1']
         name: PHP ${{ matrix.php-versions }} Testing
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
@@ -40,7 +40,6 @@ jobs:
               run: composer normalize --indent-size 4 --indent-style space --dry-run
 
             - name: PHP Cs Fixer
-              if: startsWith(matrix.php-versions, '8.1') == false
               run: ./vendor/bin/php-cs-fixer fix --diff --config vendor-bin/test/vendor/becklyn/php-cs/.php_cs.dist.php --dry-run --no-interaction
 
             - name: PhpStan

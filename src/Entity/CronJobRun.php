@@ -4,57 +4,31 @@ namespace Becklyn\CronJobBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- *
- * @ORM\Table(
- *     name="cron_job_runs",
- *     indexes={
- *
- *          @ORM\Index(name="job_key", columns={"job_key"})
- *     }
- * )
- */
+#[ORM\Table(name: 'cron_job_runs')]
+#[ORM\Index(columns: ['job_key'], name: 'job_key')]
+#[ORM\Entity]
 class CronJobRun
 {
     //region Fields
-    /**
-     * @ORM\Id()
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @ORM\Column(name="id", type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(name: 'id', type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="job_key", type="string", length=255)
-     */
-    private string $jobKey;
-
-    /**
-     * @ORM\Column(name="is_successful", type="boolean")
-     */
-    private bool $successful;
-
-    /**
-     * @ORM\Column(name="log", type="text", nullable=true)
-     */
-    private ?string $log;
-
-    /**
-     * @ORM\Column(name="time_run", type="datetime_immutable")
-     */
-    private \DateTimeImmutable $timeRun;
     //endregion
 
 
-    public function __construct (string $jobKey, bool $successful, ?string $log, \DateTimeImmutable $timeRun)
+    public function __construct(
+        #[ORM\Column(name: 'job_key', type: 'string', length: 255)]
+        private readonly string $jobKey,
+        #[ORM\Column(name: 'is_successful', type: 'boolean')]
+        private readonly bool $successful,
+        #[ORM\Column(name: 'log', type: 'text', nullable: true)]
+        private readonly ?string $log,
+        #[ORM\Column(name: 'time_run', type: 'datetime_immutable')]
+        private readonly \DateTimeImmutable $timeRun
+    )
     {
-        $this->jobKey = $jobKey;
-        $this->successful = $successful;
-        $this->log = $log;
-        $this->timeRun = $timeRun;
     }
 
 
@@ -87,5 +61,6 @@ class CronJobRun
     {
         return $this->timeRun;
     }
+
     //endregion
 }

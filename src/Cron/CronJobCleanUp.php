@@ -13,17 +13,8 @@ use Becklyn\CronJobBundle\Model\CronModel;
  */
 class CronJobCleanUp implements CronJobInterface
 {
-    private CronModel $cronModel;
-    private int $logTtl;
-
-
-    public function __construct (
-        CronModel $cronModel,
-        int $logTtl
-    )
+    public function __construct(private readonly CronModel $cronModel, private readonly int $logTtl)
     {
-        $this->cronModel = $cronModel;
-        $this->logTtl = $logTtl;
     }
 
 
@@ -53,7 +44,7 @@ class CronJobCleanUp implements CronJobInterface
         try {
             $this->cronModel->removeOldLogsByLogTtl($this->logTtl);
             return new CronStatus(true, $io->getBuffer());
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return new CronStatus(false, $io->getBuffer());
         }
     }

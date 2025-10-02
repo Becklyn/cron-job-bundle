@@ -4,16 +4,11 @@ namespace Becklyn\CronJobBundle\Cron;
 
 class CronJobRegistry
 {
-    /** @var CronJobInterface[]|iterable */
-    private iterable $jobs;
-
-
     /**
      * @param CronJobInterface[]|iterable $jobs
      */
-    public function __construct (iterable $jobs)
+    public function __construct(private readonly iterable $jobs)
     {
-        $this->jobs = $jobs;
     }
 
 
@@ -26,15 +21,12 @@ class CronJobRegistry
 
         foreach ($this->jobs as $job)
         {
-            $jobs[\get_class($job)] = $job;
+            $jobs[$job::class] = $job;
         }
 
         \uasort(
             $jobs,
-            function (CronJobInterface $left, CronJobInterface $right)
-            {
-                return \strnatcasecmp($left->getName(), $right->getName());
-            }
+            static fn(CronJobInterface $left, CronJobInterface $right) : int => \strnatcasecmp($left->getName(), $right->getName())
         );
 
         return $jobs;
@@ -45,7 +37,7 @@ class CronJobRegistry
     {
         foreach ($this->jobs as $job)
         {
-            if ($key === \get_class($job))
+            if ($key === $job::class)
             {
                 return $job;
             }

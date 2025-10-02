@@ -11,8 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class CronModel
 {
-    private EntityManagerInterface $entityManager;
-    private EntityRepository $repository;
+    private readonly EntityManagerInterface $entityManager;
+    private readonly EntityRepository $repository;
 
 
     public function __construct (ManagerRegistry $registry)
@@ -54,7 +54,7 @@ class CronModel
         $this->entityManager->createQueryBuilder()
             ->delete(CronJobRun::class, "job")
             ->where("job.timeRun < :logTtl")
-            ->setParameter("logTtl", new \DateTimeImmutable("- {$logTtl} days"))
+            ->setParameter("logTtl", new \DateTimeImmutable(\sprintf('- %d days', $logTtl)))
             ->getQuery()
             ->execute();
     }

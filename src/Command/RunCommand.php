@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use function Sentry\captureException;
 use Sentry\EventHint;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,44 +25,33 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 
+#[AsCommand(name: "cron:run")]
 class RunCommand extends Command
 {
-    public static $defaultName = "cron:run";
-
     private const RUN_SINGLE_JOB = "job";
     private const FORCED_RUN = "forced-run";
     private const DEFAULT_ANSWER = "Execute all Jobs";
 
-    private CronJobRegistry $registry;
-    private CronModel $logModel;
-    private LoggerInterface $logger;
-    private LockInterface $lock;
-    private string $maintenancePath;
-    private ?Profiler $profiler;
-    private EntityManager $entityManager;
-
+    private readonly LockInterface $lock;
+    private readonly string $maintenancePath;
+    private readonly EntityManager $entityManager;
 
     public function __construct (
-        CronJobRegistry $registry,
-        CronModel $model,
-        LoggerInterface $logger,
+        private readonly CronJobRegistry $registry,
+        private readonly CronModel $logModel,
+        private readonly LoggerInterface $logger,
         LockFactory $lockFactory,
         ManagerRegistry $doctrine,
         string $projectDir,
-        ?Profiler $profiler = null
+        private readonly ?Profiler $profiler = null
     )
     {
         parent::__construct();
 
         /** @var EntityManager $entityManager */
         $entityManager = $doctrine->getManager();
-
-        $this->registry = $registry;
-        $this->logModel = $model;
-        $this->logger = $logger;
         $this->lock = $lockFactory->createLock("cron-run", 600);
         $this->maintenancePath = \rtrim($projectDir, "/") . "/MAINTENANCE";
-        $this->profiler = $profiler;
         $this->entityManager = $entityManager;
 
         $this->addOption(
@@ -82,7 +72,7 @@ class RunCommand extends Command
     /**
      * @inheritDoc
      */
-    protected function execute (InputInterface $input, OutputInterface $output) : ?int
+    protected function execute (InputInterface $input, OutputInterface $output) : int
     {
         $isInteractive = $input->isInteractive();
         $allCronJobs = $this->registry->getAllJobs();
@@ -201,7 +191,7 @@ class RunCommand extends Command
 
         foreach ($availableCronJobs as $job)
         {
-            $choice = $job->getName() . " -> " . \get_class($job);
+            $choice = $job->getName() . " -> " . $job::class;
 
             $cronJobChoices[$choice] = $job;
         }
@@ -217,7 +207,7 @@ class RunCommand extends Command
         bool $optionForcedRun
     ) : int
     {
-        $io->section("Job: {$job->getName()}");
+        $io->section('Job: ' . $job->getName());
         $now = new \DateTimeImmutable();
         $commandStatus = self::SUCCESS;
 
@@ -225,11 +215,11 @@ class RunCommand extends Command
         {
             $wrappedJob = new WrappedJob($job, $now);
         }
-        catch (\InvalidArgumentException $exception)
+        catch (\InvalidArgumentException $invalidArgumentException)
         {
             $this->logger->error("Invalid cron tab given: {message}", [
-                "message" => $exception->getMessage(),
-                "exception" => $exception,
+                "message" => $invalidArgumentException->getMessage(),
+                "exception" => $invalidArgumentException,
             ]);
 
             // Write error message
@@ -265,18 +255,18 @@ class RunCommand extends Command
 
             return $commandStatus;
         }
-        catch (\Exception $e)
+        catch (\Exception $exception)
         {
             //region Report error to Sentry
             $eventHint = EventHint::fromArray([
-                "exception" => $e,
+                "exception" => $exception,
                 "extra" => [
-                    "cronJobInterface" => \get_class($job),
+                    "cronJobInterface" => $job::class,
                     "cronJobName" => $job->getName(),
                     "cronJobForcedRun" => $optionForcedRun,
                 ],
             ]);
-            captureException($e, $eventHint);
+            captureException($exception, $eventHint);
             //endregion
 
             $entityManager = $this->entityManager;
@@ -291,13 +281,13 @@ class RunCommand extends Command
                         $entityManager->getConfiguration()
                     );
                 }
-                catch (\Exception $e)
+                catch (\Exception $exception)
                 {
                     $io->writeln("");
                     $io->writeln("");
                     $io->writeln(\sprintf(
                         "Could not recover re-opening previously closed EntityManager connection. Encountered the following exception: '%s'.",
-                        $e->getMessage()
+                        $exception->getMessage()
                     ));
                 }
             }
@@ -313,8 +303,8 @@ class RunCommand extends Command
             $entityManager->flush();
 
             $this->logger->error("Running the cron job failed with an exception: {message}", [
-                "message" => $e->getMessage(),
-                "exception" => $e,
+                "message" => $exception->getMessage(),
+                "exception" => $exception,
             ]);
 
             $io->writeln("<fg=red>Command failed.</>");

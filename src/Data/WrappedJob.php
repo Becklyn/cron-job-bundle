@@ -8,9 +8,9 @@ use Cron\CronExpression;
 
 class WrappedJob
 {
-    private CronJobInterface $job;
-    private \DateTimeImmutable $supposedLastRun;
-    private \DateTimeImmutable $nextRun;
+    private readonly CronJobInterface $job;
+    private readonly \DateTimeImmutable $supposedLastRun;
+    private readonly \DateTimeImmutable $nextRun;
 
 
     public function __construct (CronJobInterface $job, \DateTimeInterface $now)
@@ -37,7 +37,7 @@ class WrappedJob
 
     public function getKey () : string
     {
-        return \get_class($this->job);
+        return $this->job::class;
     }
 
 

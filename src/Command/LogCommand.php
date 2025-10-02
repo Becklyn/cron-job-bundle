@@ -6,25 +6,19 @@ use Becklyn\CronJobBundle\Cron\CronJobRegistry;
 use Becklyn\CronJobBundle\Data\WrappedJob;
 use Becklyn\CronJobBundle\Entity\CronJobRun;
 use Becklyn\CronJobBundle\Model\CronModel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: "cron:log")]
 class LogCommand extends Command
 {
-    public static $defaultName = "cron:log";
-
-    private CronJobRegistry $registry;
-    private CronModel $model;
-
-
-    public function __construct (CronJobRegistry $registry, CronModel $model)
+    public function __construct (private readonly CronJobRegistry $registry, private readonly CronModel $model)
     {
         parent::__construct();
-        $this->registry = $registry;
-        $this->model = $model;
     }
 
 
@@ -38,7 +32,7 @@ class LogCommand extends Command
     }
 
 
-    protected function execute (InputInterface $input, OutputInterface $output) : ?int
+    protected function execute (InputInterface $input, OutputInterface $output) : int
     {
         $io = new SymfonyStyle($input, $output);
         $io->title("Cron Job Log");
@@ -76,7 +70,7 @@ class LogCommand extends Command
 
             if (null === $job)
             {
-                $io->error("No cron job with key '{$preselected}' registered.");
+                $io->error(\sprintf("No cron job with key '%s' registered.", $preselected));
                 return 1;
             }
         }
@@ -94,16 +88,16 @@ class LogCommand extends Command
             $job = \array_values($jobs)[0];
         }
 
-        $io->section("Job: {$job->getName()}");
+        $io->section('Job: ' . $job->getName());
 
         try
         {
             $wrappedJob = new WrappedJob($job, new \DateTimeImmutable());
             $runs = $this->model->findMostRecentRuns($wrappedJob, 10);
-            $io->comment("Key: <fg=yellow>{$wrappedJob->getKey()}</>");
-            $io->comment("Next run: {$this->formatNextRun($wrappedJob, $runs[0] ?? null)}");
+            $io->comment(\sprintf('Key: <fg=yellow>%s</>', $wrappedJob->getKey()));
+            $io->comment('Next run: ' . $this->formatNextRun($wrappedJob, $runs[0] ?? null));
 
-            if (empty($runs))
+            if ([] === $runs)
             {
                 $io->comment("No runs recorded for this job.");
                 return 0;
@@ -123,9 +117,9 @@ class LogCommand extends Command
             $io->table(["Date", "Succeeded?", "Log"], $rows);
             return 0;
         }
-        catch (\InvalidArgumentException $exception)
+        catch (\InvalidArgumentException $invalidArgumentException)
         {
-            $io->error("Invalid cron tab definition: {$exception->getMessage()}");
+            $io->error('Invalid cron tab definition: ' . $invalidArgumentException->getMessage());
             return 1;
         }
     }
@@ -150,7 +144,7 @@ class LogCommand extends Command
             catch (\InvalidArgumentException $exception)
             {
                 $invalidRows[] = [
-                    "<fg=yellow>{$job->getName()}</>",
+                    \sprintf('<fg=yellow>%s</>', $job->getName()),
                     $exception->getMessage(),
                 ];
             }
@@ -166,7 +160,7 @@ class LogCommand extends Command
                 $lastRun = $this->model->findLastRun($validJob);
 
                 $rows[] = [
-                    "<fg=yellow>{$validJob->getJob()->getName()}</>",
+                    \sprintf('<fg=yellow>%s</>', $validJob->getJob()->getName()),
                     $validJob->getJob()->getCronTab(),
                     $this->formatLastRun($lastRun),
                     $lastRun ? $lastRun->getLog() : "",
@@ -206,7 +200,7 @@ class LogCommand extends Command
             $suffix = " (failed)";
         }
 
-        return "<fg={$color}>{$lastRun->getTimeRun()->format("d.m.Y H:i")}{$suffix}</>";
+        return \sprintf('<fg=%s>%s%s</>', $color, $lastRun->getTimeRun()->format("d.m.Y H:i"), $suffix);
     }
 
 
@@ -222,6 +216,6 @@ class LogCommand extends Command
             $nextRunSuffix = " (due)";
         }
 
-        return "<fg={$nextRunColor}>{$job->getNextRun()->format("d.m.Y H:i")}{$nextRunSuffix}</>";
+        return \sprintf('<fg=%s>%s%s</>', $nextRunColor, $job->getNextRun()->format("d.m.Y H:i"), $nextRunSuffix);
     }
 }

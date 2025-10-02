@@ -4,14 +4,8 @@ namespace Becklyn\CronJobBundle\Data;
 
 class CronStatus
 {
-    private bool $succeeded;
-    private ?string $log;
-
-
-    public function __construct (bool $succeeded, ?string $log = null)
+    public function __construct(private readonly bool $succeeded, private readonly ?string $log = null)
     {
-        $this->succeeded = $succeeded;
-        $this->log = $log;
     }
 
 
